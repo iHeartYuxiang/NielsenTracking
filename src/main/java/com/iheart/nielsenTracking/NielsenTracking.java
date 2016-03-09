@@ -177,6 +177,7 @@ public class NielsenTracking extends LiveRadioPage{
 		public void switchStation()
 		{   WaitUtility.sleep(2000);
 			login();
+			WaitUtility.sleep(2000);
 			comeToThisPage_direct();
 	    	
 	    	WaitUtility.sleep(1000);
@@ -240,7 +241,7 @@ public class NielsenTracking extends LiveRadioPage{
 			 clearNielsenRequest();
 			 WaitUtility.sleep(5000);
 			
-			// List<String> urls = RequestProcessor.getNielsenRequests();
+			 System.out.println("About to check impressionPing..");
 			Map<String, String>  urls = RequestProcessor.getNielsenRequestMap();
 			if(isImpressionPingOK(urls.get("impressionPing")) )
 					errors.append("Customer station shall not be measured.");

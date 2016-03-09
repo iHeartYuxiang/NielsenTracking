@@ -137,14 +137,37 @@ public static WebDriver  createWebDriverWithProxy(String browser)
 	      capabilities.setCapability("chrome.switches", Arrays.asList("--proxy-server=http://user:password@proxy.com:8080"));
 	       driver = new ChromeDriver(capabilities);  
 	      */
-	      
+	    	 String PROXY = "localhost:5369";
+
+	    	org.openqa.selenium.Proxy proxy = new org.openqa.selenium.Proxy(); 
+	    	proxy.setHttpProxy(PROXY);
+	    	proxy.setSslProxy(PROXY); 
+	    	proxy.setFtpProxy(PROXY); 
+	    	proxy.setSocksUsername("SSSLL277"); 
+	    	proxy.setSocksPassword("password"); 
+
+	    	DesiredCapabilities dc = DesiredCapabilities.chrome();
+	    	dc.setCapability(CapabilityType.PROXY, proxy); 
+	    	dc.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true); 
+	    	
+	    	//Options
+	    	ChromeOptions options = new ChromeOptions();
+	        options.addArguments("test-type");
+	        options.addArguments("--start-maximized");
+    	
+	    	dc.setCapability(ChromeOptions.CAPABILITY, options);
+	    	
+	    	driver = new ChromeDriver(dc);
+	    	
+	    	
+	    /*	
 	      ChromeOptions options = new ChromeOptions();
 	      options.addArguments("test-type");
 	      options.addArguments("--start-maximized");
 	      options.addArguments("--proxy-server=http://localhost:5369 ");
 	      options.addArguments("--proxy-server=https://localhost:5369 ");
 	      driver = new ChromeDriver(options);
-	     
+	     */
 	      }else if (browser.equalsIgnoreCase("ie"))
 	      {    //Set actual path to the driver file
 	

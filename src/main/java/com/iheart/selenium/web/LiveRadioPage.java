@@ -439,7 +439,11 @@ public class LiveRadioPage extends Page {
 	}		
 	
 	public void comeToThisPage_direct()
-	{   String currentURL = driver.getCurrentUrl();
+	{   if (driver == null)
+		    System.out.println("INSIDE comeToThisPage_direct():" + " Driver is NULL." );
+		else
+			System.out.println("INSIDE comeToThisPage_direct():" + " Driver is OK." );
+		String currentURL = driver.getCurrentUrl();
 	//	System.out.println("SEE current url:"  + currentURL);
 	    String part1 = currentURL.split("//")[0];
 	    String part2  = currentURL.split("//")[1].split("/")[0];

@@ -234,8 +234,8 @@ public class CustomRadioPage  extends Page {
 			System.out.println("SEE new url:"  + newURL );
 			
 			driver.get(newURL);
-			//WaitUtility.sleep(1000);
-			WaitUtility.waitForAjax(driver);
+			WaitUtility.sleep(1000);
+			
 		}
 
 		public void playCustom()

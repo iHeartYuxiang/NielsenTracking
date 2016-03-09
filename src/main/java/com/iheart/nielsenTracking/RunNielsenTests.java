@@ -34,8 +34,8 @@ public class RunNielsenTests {
 	 NielsenTracking liveRadioPage;
 	 CustomRadioPage customRadioPage;
 		
-	static String browser = "firefox";
-   //static String browser = "chrome";
+	//static String browser = "firefox";
+   static String browser = "chrome";
 	
 	 
 	final String URL = "http://www.iheart.com";
@@ -44,25 +44,29 @@ public class RunNielsenTests {
 	
 	
 	@Rule public TestName name = new TestName();
-	
+	/*
 	@BeforeClass
 	public static void startUpProxy(){
 		
 		 proxy = new Proxy();
 		 proxy.initProxy(browser);
 	}
-	
+	*/
 	
 	@Before
     public void init() {
 		
-	//	 proxy = new Proxy();
+	    // proxy = new Proxy();
 		// proxy.initProxy(browser);
 		 
 		driver = Utils.launchBrowserWithProxy(URL, browser);
 	
 		 Page.setDriver (driver);
-	  //   response = proxy.fetch();
+		 
+		 proxy = new Proxy();
+		 proxy.initProxy(browser);
+		 
+		WaitUtility.sleep(8000); 
       
         homePage = PageFactory.initElements(driver, HomePage.class);
         liveRadioPage = PageFactory.initElements(driver, NielsenTracking.class);
@@ -72,7 +76,7 @@ public class RunNielsenTests {
         RequestProcessor.clearNielsenRequests();
     }
 	
-	@Test
+	@Ignore("skip")
 	 public void testPlay5Minutes() throws Exception
 	 {  
 	 	System.out.println("test method:" +  name.getMethodName() );
@@ -84,7 +88,7 @@ public class RunNielsenTests {
 	 	   //  proxy.proxy.stop();
 	 		 
 	 	}catch(Exception e)
-	 	{
+	 	{  
 	 		handleException(e);
 	 	}
 	 	System.out.println(name.getMethodName() + " is Done.");
@@ -93,7 +97,7 @@ public class RunNielsenTests {
 	
 	
 	
-	@Test
+	@Ignore("skip")
 	 public void testPlayPausePlay() throws Exception
 	 {  
 	 	System.out.println("test method:" +  name.getMethodName() );
@@ -113,7 +117,6 @@ public class RunNielsenTests {
 	 	System.out.println("test method:" +  name.getMethodName() );
 	 	try{
 	 		 liveRadioPage.switchStation();
-	 	    // proxy.proxy.stop();
 	 	}catch(Exception e)
 	 	{
 	 		handleException(e);
@@ -137,7 +140,7 @@ public class RunNielsenTests {
 	 	System.out.println(name.getMethodName() + " is Done.");
 	 }
 
-	@Test
+	@Ignore("skip this")
 	 public void testPrivacyPolicy() throws Exception
 	 {  
 	 	System.out.println("test method:" +  name.getMethodName() );
@@ -153,19 +156,28 @@ public class RunNielsenTests {
 	
     @After
     public void tearDown() throws Exception{
-        driver.quit(); 
-       
+    	//proxy.proxy.stop();
     	if (Page.getErrors().length() > 0)
 			 fail(Page.getErrors().toString());
+    	try{
+        	driver.quit(); 
+    	}catch(Exception e)
+    	{   
+    		System.out.println("Excepton closing driver. Why the hack so?");
+    		e.printStackTrace();
+    	}
+        
+    	proxy.proxy.stop();
     	
     }
-    
+    /*
     @AfterClass
     public static void shutDownProxy()
     {
     	 proxy.proxy.stop();
+    	 System.out.println("Proxy is shut down.");
     }
-
+     */
     private void handleException(Exception e)
     {   Page.getErrors().append("Exception is thrown.");
         e.printStackTrace();
@@ -173,7 +185,7 @@ public class RunNielsenTests {
     	   Page.takeScreenshot(driver, name.getMethodName());
         }catch(Exception eX)
         {
-        	
+        	eX.printStackTrace();
         }
     }
     

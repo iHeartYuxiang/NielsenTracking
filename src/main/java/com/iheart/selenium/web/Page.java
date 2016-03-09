@@ -297,14 +297,21 @@ public abstract class Page {
    }
    
    public void login()
-	{   if (Page.getBrowser().equalsIgnoreCase("chrome"))
-			WaitUtility.sleep(1000);
-		    
+	{   
+		//check driver here
+	    if (driver == null)  
+	    	System.out.println("Driver is null!");
+	    else 
+	    	System.out.println("Driver is OK!");
+	    	
+	    int count = 0;
+	    
 		do{
+			waitForElement(loginButton);
 			loginButton.click();
-			WaitUtility.sleep(500);
+			count++;
 			
-		}while (!driver.getPageSource().contains("Don't have an account?"));
+		}while (count < 6 && !driver.getPageSource().contains("Don't have an account?"));
 		
 		//WaitUtility.sleep(1500);
     	userName.sendKeys(FACEBOOKemail);
@@ -315,6 +322,16 @@ public abstract class Page {
 		WaitUtility.sleep(1000);
 	}
 	
+  
+   
+   private void waitForElement(WebElement element)
+   {
+	   WebDriverWait wait = new WebDriverWait(driver, 60);
+	   wait.until(ExpectedConditions.elementToBeClickable(element));
+	  // element.click();
+   }
+   
+   
    
    private List<WebElement> getMyStations()
    {
