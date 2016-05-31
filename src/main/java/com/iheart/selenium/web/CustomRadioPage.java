@@ -220,7 +220,7 @@ public class CustomRadioPage  extends Page {
 			clickOnTopPlayButton();
 			
 			makeSureItIsPlaying();
-			//WaitUtility.interceptAjax(driver);
+			WaitUtility.interceptAjax(driver);
 			WaitUtility.interceptAjaxSend(driver);
 			WaitUtility.sleep(120*000);
 		}
