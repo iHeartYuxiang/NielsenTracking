@@ -65,7 +65,8 @@ public class WaitUtility {
 	public static void injectJQuery(WebDriver driver){
 	    String LoadJQuery = "(function(jqueryUrl, callback) {\n" +
 	            "if (typeof jqueryUrl != 'string') {" +
-	            "jqueryUrl = 'https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js';\n" +
+	           // "jqueryUrl = 'https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js';\n" +
+	           "jqueryUrl = 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js';\n" +
 	            "}\n" +
 	            "if (typeof jQuery == 'undefined') {\n" +
 	            "var script = document.createElement('script');\n" +
@@ -96,24 +97,7 @@ public class WaitUtility {
 	}	
 	
 	
-	public static void hijackAjaxSend(WebDriver driver) throws Exception
-    {
-        driver.manage().timeouts().setScriptTimeout(10, TimeUnit.SECONDS);
-        JavascriptExecutor js = (JavascriptExecutor) driver;
-        js.executeAsyncScript("(function( send) {"+ 
-			        		 " XMLHttpRequest.prototype.realSend = XMLHttpRequest.prototype.send;"+
-						     // here "this" points to the XMLHttpRequest Object.
-						    " var newSend = function(vData) {"
-						     + 			"console.log('see request data: ' + vData);}" +
-						     "  this.realSend(vData);" +
-						    
-						     " };" +
-						    " XMLHttpRequest.prototype.send = newSend;" +
-						   
-						    "})(XMLHttpRequest.prototype.send);"
-        );
-    }
-    
+	
 	
 	public static void hijackHTTPS(WebDriver driver) throws Exception
     {
@@ -190,7 +174,7 @@ public class WaitUtility {
   }						
     
 
-    public static void interceptAjaxSend(WebDriver driver) throws Exception
+    public static void interceptAjaxSendData(WebDriver driver) throws Exception
     {
     	JavascriptExecutor js = (JavascriptExecutor) driver;
         String ajaxURL = "";
