@@ -57,8 +57,7 @@ public class NielsenTracking extends LiveRadioPage{
 		public void playPausePlay()
 	    {   login();
 	    	comeToThisPage_direct();
-	    	
-	    	WaitUtility.sleep(1000);
+	    	WaitUtility.sleep(2000);
 	    	//play for 2 minutes and 2 seconds
 	    	driver.findElement(By.cssSelector(".icon-play")).click();
 	    	makeSureItIsPlaying();
@@ -71,7 +70,13 @@ public class NielsenTracking extends LiveRadioPage{
 	    	 //stop, then pause for 2 minutes
 	    	
 	    	//driver.findElement(By.cssSelector(".icon-stop")).click();
-	    	driver.findElement(By.cssSelector("button.playing:nth-child(3)")).click();
+	    	//#player > div.player-center > div > button.playing.btn-circle.medium.play > i
+	    	try{
+	    	   driver.findElement(By.cssSelector("button.playing:nth-child(3)")).click();
+	    	}catch(Exception e)
+	    	{
+	    		driver.findElement(By.cssSelector("button.playing:nth-child(3)")).click();
+	    	}
 	    	makeSureItIsNotPlaying();
 	        System.out.println("Station shall not be playing now.");
 	        
@@ -490,5 +495,4 @@ public class NielsenTracking extends LiveRadioPage{
 	    }
 		    
 		
-	
 }

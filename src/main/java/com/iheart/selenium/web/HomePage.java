@@ -19,7 +19,7 @@ import java.util.HashMap;
 
 
 
-
+//aka For You Page
 public class HomePage extends Page {
 
 	
@@ -30,22 +30,27 @@ public class HomePage extends Page {
 	
 	@FindBy(css="li.genre:nth-child(10) > div:nth-child(1) > div:nth-child(3)") public WebElement sport;
 	@FindBy(css="button.idle:nth-child(3)") public WebElement playStation;
+
 	@FindBy(css="button.text:nth-child(1)") public WebElement myStation;
-	
+	@FindBy(css=".section-header")   public WebElement stationHeader;
 	
 	@FindBy(css="li.genre:nth-child(1) > div:nth-child(1) > div:nth-child(1)") public WebElement firstGenra;
 	@FindBy(css=".genre-game-footer > button:nth-child(1)") public WebElement getStation;
-	@FindBy(css="li.tabbar:nth-child(1) > a:nth-child(1)") public WebElement forYouLink;
-	@FindBy(css="#hero > div.hero-content > div > div.profile-art-wrapper") public WebElement hero;
-	@FindBy(css="a.small:nth-child(1)") public WebElement heroEnter;
+	//@FindBy(css="li.tabbar:nth-child(1) > a:nth-child(1)") public WebElement forYouLink;
+	///@FindBy(css="li.tabbar:nth-child(1) > a:nth-child(1)") public WebElement forYouLink;
 	
+	@FindBy(css="#hero > div.hero-content > div > div.profile-art-wrapper") public WebElement hero;
+	@FindBy(css="a.small") public WebElement heroEnter;
+	
+	//@FindBy(css=".station-description > p:nth-child(1) > div:nth-child(1) > a:nth-child(3)")  public WebElement heroEnter;
 	
 
 	@FindBy(css="#player > div.player-center > div > button.idle.btn-circle.medium.play > i")
 		public WebElement playButton;
 
 	//for Z100.com/Popular User Flow
-	@FindBy(css="body > div.pageWrapper > div.nowPlayingWrapper.full > div > a > span.cta > span:nth-child(1)")
+	//@FindBy(css="body > div.pageWrapper > div.nowPlayingWrapper.full > div > a > span.cta > span:nth-child(1)")
+	@FindBy(css="body > div.page-wrapper > div.nowplaying-wrapper.full > section > section.listen-live.left > a > div.small-8.cta > span:nth-child(1)")
 		private WebElement listenLive;
 	
 	 public HomePage() {
@@ -59,27 +64,49 @@ public class HomePage extends Page {
 	//For Most Popular User Flow
 	public void  flowAlong()
 	{
-		listenLive.click();
+	    listenLive.click();
+		
 		makeSureItIsPlaying();
 		
 		String winHandleBefore = driver.getWindowHandle();
 		
+		int windowCount = 0;
 		//Switch to new window opened
 		for(String winHandle : driver.getWindowHandles()){
 		    driver.switchTo().window(winHandle);
+
+		    windowCount ++;
+		    if (windowCount == 2) break;
+
 		}
 		
-		//Wait  extra 10 seconds cos sometimes the signup page comes up slow
-		WaitUtility.sleep(10000);
-	    //Signup 
+		//Here, need to modify URL per env and  reload page
+	   if (!Page.getURL().startsWith("http://www."))
+		   driver.get(modifyURLPerRunningEnv());
+		//Pre-roll gets kicked here some times. Handle it 
+	   handlePreRoll();
 		signUp();
-		
 	}
 	
+	private String modifyURLPerRunningEnv()
+	{
+		String currentURL = driver.getCurrentUrl();
+		//What env it is on? 
+	    String runningEnvURL = Page.getURL();
+	    String part1 = runningEnvURL.split(".iheart.")[0];
+	    System.out.println("part 1:" + part1);
+	    String part2  = currentURL.split(".iheart.")[1];
+	    System.out.println("part 2:" + part2);
+	    
+	    String newURL = part1  + ".iheart."+  part2  ;
+		System.out.println("SEE new url adjusted for running env:"  + newURL );
+		return newURL;
+		
+	    
+	}
 	
 	public void WEB_14440_playerUponFirstLaunch()
 	{  
-		WaitUtility.sleep(500);
 		top40.click();
 		getStations.click();
 		
@@ -89,7 +116,6 @@ public class HomePage extends Page {
 	
 	public void WEB_21226_playDefaultByLocation()
 	{  
-		WaitUtility.sleep(500);
 		top40.click();
 		getStations.click();
 		
@@ -106,15 +132,25 @@ public class HomePage extends Page {
 	public void WEB_11734_startUp()
 	{   
 		comedy.click();
-		WaitUtility.waitForAjax(driver);
-		playStation.click();
+		waitForElement(driver.findElement(By.cssSelector(".genre-game-footer > button:nth-child(1)")),5000).click();
 		
-		//driver.navigate().refresh();
-		//driver.navigate().back();
-		driver.get("iheart.com");
-		WaitUtility.waitForAjax(driver);
-		sport.click();
-		playStation.click();
+		WaitUtility.sleep(5000);
+		
+	    playStation.click();
+		
+		driver.quit();
+		driver = null;
+		driver = Utils.launchBrowser("http://www.iheart.com", Page.getBrowser());
+		
+		driver.findElement(By.cssSelector("#dialog > div > div.dialog.ui-on-grey > div.wrapper > div > div.genres-wrapper.wrapper > ul > li:nth-child(10) > div > div.genre-img")).click();
+		driver.findElement(By.cssSelector(".genre-game-footer > button:nth-child(1)")).click();
+		
+		//playStation.click();
+		WaitUtility.sleep(6000);
+		driver.findElement(By.cssSelector("#player > div.player-center > div > button.idle.btn-circle.medium.play > i")).click();
+		
+		//waitForElement(driver.findElement(By.cssSelector("#player > div.player-center > div > button.idle.btn-circle.medium.play > i")), 5000).click();
+		driver.quit();
 	}
 	
 	
@@ -122,9 +158,9 @@ public class HomePage extends Page {
 	{
 		
 		firstGenra.click();
-		WaitUtility.waitForAjax(driver);
+		//WaitUtility.waitForAjax(driver);
 		getStation.click();
-		WaitUtility.waitForAjax(driver);
+		//WaitUtility.waitForAjax(driver);
 		
 		// assert that player shall appear
 	   System.out.println("See text:"+ myStation.getText());
@@ -134,13 +170,14 @@ public class HomePage extends Page {
 		
 		//Check for you link
 		//check Hero 
+		/*
 		try {
 			forYouLink.getText();
 			System.out.println("For You link is here.");
 		}catch(Exception e)
 		{   handleError("For You link is missing.", "WEB_11759_11790_Hero" );
 		}
-		
+		*/
 		try {
 			hero.getText();
 		}catch(Exception e)
@@ -169,136 +206,43 @@ public class HomePage extends Page {
 	{
 		
 		firstGenra.click();
-		WaitUtility.waitForAjax(driver);
 		getStation.click();
-		WaitUtility.waitForAjax(driver);
-		
-	   System.out.println("See text:"+ myStation.getText());
 	   
-		if(!myStation.getText().contains("Stations"))
+	   if (!stationHeader.getText().contains("Stations Just For You"))
 			 handleError("Didn't reach My Stations page.", "WEB_11790_Hero" );
 		
-		//Check for you link
-		//check Hero 
-		try {
-			forYouLink.getText();
-			System.out.println("For You link is here.");
-		}catch(Exception e)
-		{   handleError("For You link is missing.", "WEB_11790_Hero" );
-		}
+	   makeSureItIsPlaying();
+	   
 		
 		try {
-			hero.getText();
+		  	System.out.println("see hero:" + hero.getText());
 		}catch(Exception e)
 		{   
 			handleError("Hero is missing.", "WEB_11790_Hero");
 		}
 		
-		heroEnter.click();
 		
-		//Verify that a seperate window is launched
-		String winHandleBefore = driver.getWindowHandle();
-		
-		
-		//Switch to new window opened
-		for(String winHandle : driver.getWindowHandles()){
-		    driver.switchTo().window(winHandle);
-		}
-		
-	    //Check page title of the newly launched window
-		System.out.println(driver.getTitle()); 
-		
-		//driver.close();
-
-		//Switch back to original browser (first window)
-		driver.switchTo().window(winHandleBefore);
-		
-		//play live and custom station respectively
-		//live
-		driver.findElement(By.cssSelector("#main > ul:nth-child(1) > li:nth-child(1) > div:nth-child(1) > div:nth-child(1) > a:nth-child(1) > div:nth-child(2) > button:nth-child(2)")).click();
-		//Check stream
-	    if (icon_play.isDisplayed())
-	    	errors.append("Stream is not started for live radio.");
-	    
-	    driver.navigate().back();
-	    //Play a custom station
-	    driver.findElement(By.cssSelector("#main > ul:nth-child(1) > li:nth-child(8) > div:nth-child(1) > div:nth-child(1) > a:nth-child(1) > div:nth-child(2) > button:nth-child(2)")).click();
-	    
-	    if (!icon_play.isDisplayed())
-	    	errors.append("Custom station is playing for unauthorized user.");
+	
 	    if(!isSoftGateShow())
 	    	errors.append("Sign up page is not displayed for unauthorized user.");
 	    	
 	}
 	
 	
-	public void WEB_11735_explorerMenu() throws Exception
-	{   String theOption ="";
-		String options ="";
-		
-		 explorer.click();
-		 WaitUtility.sleep(1000);
-		 
-		 //Verify drop down options
-		 List<WebElement> allElements = driver.findElements(By.cssSelector("body > div:nth-child(1) > div.header > div.header-wrapper > div > div:nth-child(1) > div > div > nav > ul > li")); 
-
-		 for (WebElement element: allElements) 
-	     {   
-	    	 theOption = element.getText().trim();
-	    	  options += theOption;
-	    	  WaitUtility.waitForAjax(driver);
-	    	
-	     }
-		 
-		 if (!options.contains("For You") || !options.contains("Live Radio") || !options.contains("Custom Radio") 
-				 || !options.contains("Genres") || !options.contains("Podcasts") || !options.contains("Perfect For"))
-		 {    
-			 handleError("Option is missing from the dropdown menu.", "WEB_11735_explorerMenu" );
-		 }
-		 
-		 
-		 //Click on each opton of the drop-down menu
-		
-		 
-		 verifyExplorerLink(option_forYou, "Home");
 	
-		// verifyExplorerLink(option_liveRadio, "Live");
-		 explorer.click();
-		 driver.findElement(By.cssSelector("div.dropdown-trigger:nth-child(2) > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(2) > a:nth-child(1)")).click();
-		
-		 //verifyExplorerLink(option_customRadio, "Popular Artists");
-		 explorer.click();
-		 driver.findElement(By.cssSelector("div.dropdown-trigger:nth-child(2) > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(3) > a:nth-child(1)")).click();
-		
-		 
-	
-		// verifyExplorerLink(option_genres, "Genres");
-		 explorer.click();
-		 driver.findElement(By.cssSelector("div.dropdown-trigger:nth-child(2) > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(4) > a:nth-child(1)")).click();
-		
-		 
-		// verifyExplorerLink(option_podCasts, "Popular Talk Shows");
-		 explorer.click();
-		 driver.findElement(By.cssSelector("div.dropdown-trigger:nth-child(2) > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(5) > a:nth-child(1)")).click();
-		
-		 //verifyExplorerLink(option_perfectFor, "Perfect For");
-		 explorer.click();
-		 driver.findElement(By.cssSelector("div.dropdown-trigger:nth-child(2) > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(6) > a:nth-child(1)")).click();
-		
+	public void WEB_11735_exploreMenu() throws Exception
+	{
+		 verifyLink(forYou, EXPECTED_TITLE_FORYOU);
+		 verifyLink(liveRadio, EXPECTED_TITLE_LIVERADIO);
+		 verifyLink(customRadio, EXPECTED_TITLE_CUSTOMRADIO);
+		 verifyLink(genres, EXPECTED_TITLE_GENRES);
+		 verifyLink(perfectFor, EXPECTED_TITLE_PERFECTFOR);
+		 verifyLink(podcasts, EXPECTED_TITLE_PODCASTS);
 	}
 	
-	
-	
-	private void verifyExplorerLink(WebElement option, String expectedTitle)
-	{   
-		explorer.click();
-		WaitUtility.sleep(200);
-		String _option = option.getText().trim();
-		System.out.println("Verify option:" + _option);
-		
-		//clickOnExplorerOption(option, expectedTitle);
-		gotoExplorerOption(option, expectedTitle);
-		
+	private void verifyLink(WebElement option, String expectedTitle)
+	{    option.click();
+	     String _option =  option.getText() ;
 		 System.out.println("See option/ title: "+ _option +"/"+ driver.getTitle());
 		 if(!driver.getTitle().contains(expectedTitle))
 			 handleError(_option +" link is not working.", "WEB_11735_explorerMenu" );
@@ -306,30 +250,46 @@ public class HomePage extends Page {
 	}
 	
 	
-	
 	public void WEB_11784_signUp()
 	{
 		firstGenra.click();
-		WaitUtility.waitForAjax(driver);
+		//WaitUtility.waitForAjax(driver);
 		
 		getStation.click();
-		WaitUtility.waitForAjax(driver);
+		//WaitUtility.waitForAjax(driver);
 		playButton.click();
 		makeSureItIsPlaying();
-	    
-		signUp();
+	  	signUp();
 	   
 	}
 	
 	
 	public void WEB_11736_signUp()
-	{   driver.findElement(By.cssSelector("button.short:nth-child(3)")).click();
+	{  
+		int count = 0;
+		boolean clickAgain = true;
+        do
+        {
+        	try{
+			  driver.findElement(By.cssSelector(".icon-account")).click();
+			   clickAgain  = false;
+	        }catch(Exception e) 
+	        {
+	            clickAgain = true; 
+	            WaitUtility.sleep(1000);
+	        }	
+            count++;
+            
+        	
+	     } while (count < 3 && clickAgain)	;
+	        	        
+		
+		signUpLink.click();
 		signUp();
 	}
 	
 	public void WEB_11738_FACEBOOKsignUp()
-	{   header_signUp.click();
-	   // facebookLogin.click();
+	{   loginButton.click();
 	    faceBookSignUp();
 		
 	}
@@ -353,13 +313,17 @@ public class HomePage extends Page {
 	
 	
 	public void WEB_8823_faceBooksignUp()
-	{
-		firstGenra.click();
-		WaitUtility.sleep(1000);
-		getStation.click();
-		WaitUtility.sleep(1000);
-		playButton.click();
+	{     
+		waitForElement(firstGenra, 5000).click();
 		
+		waitForElement(getStation, 5000).click();
+	    try{
+		  waitForElement(playButton, 5000).click();
+	    }catch(Exception e)
+	    {
+	    	WaitUtility.sleep(1000);
+	    	playButton.click();
+	    }
 		makeSureItIsPlaying();
 		
 		
@@ -383,7 +347,6 @@ public class HomePage extends Page {
 		userName.sendKeys(FACEBOOKemail);
 		passWord.sendKeys(_PASSWORD);
 		login.click();
-		WaitUtility.sleep(2000);
 		
 		
 	    System.out.println("see account:" + signedFBacct.getText());
@@ -397,14 +360,19 @@ public class HomePage extends Page {
 	}
 	
 	public void WEB_11739_loginWithGoog()
-	{
+	{   
+		/*
+		int count = 0;
 		do{
 			loginButton.click();
 			WaitUtility.sleep(1000);
-		}while (!driver.getPageSource().contains("Don't have an account?"));
+			count++;
+		}while (count < 5 && !driver.getPageSource().contains("Don't have an account?"));
+		*/
+		waitForElement(loginButton, 10000).click();
 		
+		waitForElement(driver.findElement(By.cssSelector("#dialog > div > div.dialog.ui-on-grey > div.wrapper > header > h2")), 10000);
 		googleButton.click();
-		
 		//Need to switch Windows here
 		String winHandleBefore = switchWindow();
 		googEmail.sendKeys(FACEBOOKemail);
@@ -418,10 +386,9 @@ public class HomePage extends Page {
 		googPass.sendKeys(_PASSWORD);
 		googLogin.click();
 		
-		WaitUtility.sleep(2000);
-		
 		 driver.switchTo().window(winHandleBefore);
-	    System.out.println("see account:" + signedFBacct.getText());
+		 System.out.println("see account:" + waitForElement(signedFBacct, 5000).getText());
+	   // System.out.println("see account:" + signedFBacct.getText());
 	    
 	    try{
 	    	signedFBacct.click();
@@ -439,7 +406,8 @@ public class HomePage extends Page {
 		
 		List<WebElement> resultRows = driver.findElements(By.className("search-section"));
 		System.out.println(resultRows.size() + " rows are suggested.");
-		
+	//	boolean failed = true;
+		//if (failed)
 		if (resultRows == null || resultRows.size() <1)
 	    	errors.append("No suggestion is found.");
 	    
@@ -470,7 +438,6 @@ public class HomePage extends Page {
 	
 	public void WEB_11902_GeographySearch(String city)
 	{   System.out.println("Check user city:" + city);
-	    WaitUtility.sleep(1000);
 		searchBox.sendKeys("97.1"); 
 		
 		String topHit = driver.findElement(By.cssSelector(".selected > div:nth-child(2) > p:nth-child(2)")).getText();

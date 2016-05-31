@@ -6,7 +6,10 @@ import java.io.File;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
+import org.junit.runner.Description;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -19,46 +22,18 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.remote.Augmenter;
+import org.openqa.selenium.JavascriptExecutor;
 
 
 public abstract class Page {
 
-	//for Explorer menu
-	@FindBy(css="body > div:nth-child(1) > div.header > div.header-wrapper > div > div:nth-child(1) > div > button > span") 
-		public WebElement explorer;
-	@FindBy(css="body > div:nth-child(1) > div.header > div.header-wrapper > div > div:nth-child(1) > div > div > nav > ul") 
-		public WebElement dropdowns;
 	
-	//body > div:nth-child(1) > div.header > div.header-wrapper > div > div:nth-child(1) > div > div > nav > ul > li  //The following is firefox version
-	
-	@FindBy(css="div.dropdown-trigger:nth-child(2) > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(1) > a:nth-child(1)")
-		public WebElement option_forYou;
-	@FindBy(css="div.dropdown-trigger:nth-child(2) > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(2) > a:nth-child(1)") 
-		public WebElement option_liveRadio;
-	@FindBy(css="div.dropdown-trigger:nth-child(2) > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(3) > a:nth-child(1)") 
-		public WebElement option_customRadio;
-	@FindBy(css="div.dropdown-trigger:nth-child(2) > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(4) > a:nth-child(1)") 
-		public WebElement option_genres;
-	@FindBy(css="div.dropdown-trigger:nth-child(2) > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(5) > a:nth-child(1)") 
-		public WebElement option_podCasts;
-	@FindBy(css="div.dropdown-trigger:nth-child(2) > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(6) > a:nth-child(1)")
-		public WebElement option_perfectFor;
-	
-	
-	//Chrome Version
-	
-	@FindBy(css="body > div:nth-child(1) > div.header > div.header-wrapper > div > div:nth-child(1) > div > div > nav > ul > li:nth-child(1) > a")
-		public WebElement option_forYou_chrome;
-	@FindBy(css="body > div:nth-child(1) > div.header > div.header-wrapper > div > div:nth-child(1) > div > div > nav > ul > li:nth-child(2) > a") 
-		public WebElement option_liveRadio_chrome;
-	@FindBy(css="body > div:nth-child(1) > div.header > div.header-wrapper > div > div:nth-child(1) > div > div > nav > ul > li:nth-child(3) > a") 
-		public WebElement option_customRadio_chrome;
-	@FindBy(css="body > div:nth-child(1) > div.header > div.header-wrapper > div > div:nth-child(1) > div > div > nav > ul > li:nth-child(4) > a") 
-		public WebElement option_genres_chrome;
-	@FindBy(css="body > div:nth-child(1) > div.header > div.header-wrapper > div > div:nth-child(1) > div > div > nav > ul > li:nth-child(5) > a") 
-		public WebElement option_podCasts_chrome;
-	@FindBy(css="body > div:nth-child(1) > div.header > div.header-wrapper > div > div:nth-child(1) > div > div > nav > ul > li:nth-child(6) > a")
-		public WebElement option_perfectFor_chrome;
+	@FindBy(css=".header-menu-main > li:nth-child(1) > a:nth-child(1)")   public WebElement forYou;
+	@FindBy(css=".header-menu-main > li:nth-child(2) > a:nth-child(1)")   public WebElement liveRadio;
+	@FindBy(css=".header-menu-main > li:nth-child(3) > a:nth-child(1)")    public WebElement customRadio;
+	@FindBy(css=".header-menu-main > li:nth-child(4) > a:nth-child(1)") 	public WebElement genres;
+	@FindBy(css=".header-menu-main > li:nth-child(5) > a:nth-child(1)") 	public WebElement podcasts;
+	@FindBy(css=".header-menu-main > li:nth-child(6) > a:nth-child(1)")    public WebElement perfectFor;
 	
 	
 	//Search
@@ -71,20 +46,18 @@ public abstract class Page {
    @FindBy(css=".player-station") public WebElement playerStation;
 	
 	//In the header
-	
-	@FindBy(css=".header-right > button:nth-child(1)") public WebElement header_login;
-	@FindBy(css="button.short:nth-child(3)") public WebElement header_signUp;
-	//inside signup page
+
+   
 	@FindBy(css="button.facebook:nth-child(1)") public WebElement facebookLogin;
 	@FindBy(css="button.facebook:nth-child(2)") public WebElement googleLogin;
 	
 	 //For Signup Page
-	//
-	//@FindBy(css=".icon-close") public WebElement icon_close;
-	@FindBy(css=".dialog-close > div:nth-child(1) > button:nth-child(1)") public WebElement icon_close;
-	@FindBy(css="#dialog > div > div.dialog.ui-on-grey > div.wrapper > header > h2") public WebElement signupHeader;
-	@FindBy(css="header.dialog-section > div:nth-child(2) > span:nth-child(1) > span:nth-child(1)") public WebElement signupHint; //Have an account? Log In
 	
+	@FindBy(css=".dialog-close > div:nth-child(1) > button:nth-child(1)") public WebElement icon_close;
+	 @FindBy(css="header.dialog-section > div:nth-child(2) > span:nth-child(1) > a:nth-child(3)")  public WebElement signUpLink;
+	@FindBy(css="#dialog > div > div.dialog.ui-on-grey > div.wrapper > header > h2") public WebElement signupHeader;
+	@FindBy(css=".dialog-title")   public WebElement signupHint; //Have an account? Log In
+	          
 	@FindBy(css="[name='userName'][type='text']")  public WebElement email;
 	@FindBy(css="[name='password'][type='password']")  public WebElement password;
 	
@@ -100,57 +73,81 @@ public abstract class Page {
 	
 	@FindBy(css="#dialog > div > div.dialog.ui-on-grey > div.wrapper > div > div > form > button") public WebElement signUp;
 	
+	
+	
 	//SignedAccount DROP-DOWN
-	@FindBy(css="div.dropdown-trigger:nth-child(1) > button:nth-child(1)") public WebElement signedAccount;
-	@FindBy(css="div.dropdown-trigger:nth-child(1) > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1)")
-	    public WebElement signedAccountDropDown;
-	@FindBy(css="div.dropdown-trigger:nth-child(1) > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1)") 
-	  	public WebElement  signedAcctDropDown;
-	@FindBy(css="div.dropdown-trigger:nth-child(1) > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(1) > a:nth-child(1)")
+	@FindBy(css="#page-view-container > div > div.header > div.header-wrapper > div > div.header-right > div > div:nth-child(1) > button > span") public WebElement signedAccount;
+
+	
+	@FindBy(css="//*[@id='page-view-container']/div/div[1]/div[2]/div/div[2]/div/button/span")  public WebElement signedAccount_chrome;
+	
+	
+	@FindBy(css="div.dropdown-trigger:nth-child(2) > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(1) > a:nth-child(1)")
 		public WebElement option_profile;
-	@FindBy(css="div.dropdown-trigger:nth-child(1) > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(2) > a:nth-child(1)")
+	@FindBy(css="div.dropdown-trigger:nth-child(2) > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(2) > a:nth-child(1)")
 		public WebElement option_myStations;
-	@FindBy(css="div.dropdown-trigger:nth-child(1) > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(3) > a:nth-child(1)")
+	@FindBy(css="div.dropdown-trigger:nth-child(2) > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(3) > a:nth-child(1)")
 		public WebElement  option_listenHistory;
-	@FindBy(css="div.dropdown-trigger:nth-child(1) > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(4) > a:nth-child(1)")
-		public WebElement option_friends;
-	@FindBy(css="div.dropdown-trigger:nth-child(1) > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(5) > a:nth-child(1)")
-		public WebElement option_setting;
-	@FindBy(css="div.dropdown-trigger:nth-child(1) > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(6) > a:nth-child(1)")
-	    public WebElement option_logout;
 		
+	@FindBy(css="div.dropdown-trigger:nth-child(2) > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(4) > a:nth-child(1)")
+		public WebElement  option_favoriteSongs;	
+		
+	@FindBy(css="div.dropdown-trigger:nth-child(2) > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(5) > a:nth-child(1)")
+		public WebElement option_friends;
+	@FindBy(css="div.dropdown-trigger:nth-child(2) > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(6) > a:nth-child(1)")
+		public WebElement option_setting;
+				 
+	@FindBy(css="div.dropdown-trigger:nth-child(2) > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(7) > a:nth-child(1)")
+	    public WebElement option_logout;
+	
+	          
+	@FindBy(css="#page-view-container > div > div.header > div.header-wrapper > div > div.header-right > div > button > span")  public WebElement option_logout_chrome;
+	
+    public final static String EXPECTED_TITLE_FORYOU = "Listen to Free Radio Stations";
+    public final static String EXPECTED_TITLE_LIVERADIO = "Listen to Top Radio Stations";
+    public final static String EXPECTED_TITLE_CUSTOMRADIO = "Create Free Music Stations";
+    public final static String EXPECTED_TITLE_GENRES = "Find Radio & Custom";
+    public final static String EXPECTED_TITLE_PODCASTS = "Listen to the Best Podcasts";
+    public final static String EXPECTED_TITLE_PERFECTFOR = "Listen to Music Pefect for";
+    public final static String EXPECTED_TITLE_LOGOUT = "Listen to Free Radio Stations";
+    
+    
+	
 	
 	//SignedAccount -> Profile -> Favorite Episode
 	@FindBy(css="li.tabbar:nth-child(6) > a:nth-child(1)") private WebElement favoriteEpisodes;
 		
+	@FindBy(css="#hero > div.hero-content > div > div.profile-info > div > ul > li.station-name > button > i")  public WebElement   top_favorite_icon ;
 	@FindBy(css=".icon-favorite-filled")  public WebElement   icon_favorite_filled ;
 	@FindBy(css=".icon-favorite-unfilled")  public WebElement   icon_favorite_unfilled ;
     
 	//facebook signup
-
-	@FindBy(css="#dialog > div > div.dialog.ui-on-grey > div.wrapper > div > div > section > ul > li:nth-child(1) > button > span")  public WebElement faceBook;
+	
+    @FindBy(css="button.facebook:nth-child(1)")  public WebElement faceBook;
 	
 	@FindBy(id="email") public WebElement faceEmail;
 	@FindBy(id="pass") public WebElement facePass;
 	@FindBy(id="u_0_2") public WebElement faceLogin;
-	@FindBy(css="div.dropdown-trigger:nth-child(1) > button:nth-child(1)") public WebElement signedFBacct;
-	
+
+	//@FindBy(css="div.dropdown-trigger:nth-child(2) > button:nth-child(1)") public WebElement signedFBacct;
+		@FindBy(css="div.dropdown-trigger:nth-child(2) > div:nth-child(1) > button:nth-child(1)")   public WebElement signedFBacct;
+
 	//Google login
 	@FindBy(id="Email")  public WebElement googEmail;
 	@FindBy(id="Passwd") public WebElement googPass;
 	@FindBy(id="signIn") public WebElement googLogin;
 	
 	//login with email
-	//@FindBy(css="body > div:nth-child(1) > div.header > div.header-wrapper > div > div:nth-child(3) > div > button:nth-child(1)") public WebElement loginButton;
-	//@FindBy(css=".header-right > button:nth-child(1)") public WebElement loginButton;
-	@FindBy(css=".icon-account")	public WebElement loginButton;
+	@FindBy(css=".icon-account")  public WebElement loginButton;
+		
 	
 	@FindBy(css="[name='username'][type='text']")  public WebElement userName;
 	@FindBy(css="[name='password'][type='password']")  public WebElement passWord;
 	@FindBy(xpath="//*[@id='dialog']/div/div[2]/div[2]/div/form/button")  public WebElement login;
 	
 	//login wiht G+
-	@FindBy(css="#dialog > div > div.dialog.ui-on-grey > div.wrapper > div > section > ul > li:nth-child(2) > button") public WebElement googleButton;
+	//@FindBy(css="#dialog > div > div.dialog.ui-on-grey > div.wrapper > div > section > ul > li:nth-child(2) > button") public WebElement googleButton;
+	@FindBy(css=".google-plus") public WebElement googleButton;
 	
 	//GROWLS
 	@FindBy(css=".growls") public WebElement growls;
@@ -160,27 +157,35 @@ public abstract class Page {
 	@FindBy(css=".icon-skip") public WebElement icon_skip2;
 	//Moved from liveRadioPage. 
 	@FindBy(css="#player > div.player-center > div > button.btn.text.no-border.xsmall > span") public WebElement icon_scan;
-	@FindBy(css=".player-song") public WebElement player_song;
+	
+	@FindBy(css="#player > div.player-left > div.player-info > a.player-song")  public WebElement player_song;
 	
 	//player buttons
 	
 	@FindBy(id="player") public WebElement player;
+	@FindBy(xpath="//*[@id='player']/div[2]/div/button[3]")   public WebElement playButton;
 	@FindBy(css="button.idle:nth-child(3)") public WebElement button_playing;
 	
 	@FindBy(css="button.playing:nth-child(3)") public WebElement button_pause;
 	
 	@FindBy(css=".icon-play") public WebElement icon_play;
+    @FindBy(css="button.idle:nth-child(3)")  public WebElement icon_play_inPlayer;
+    
+    @FindBy(css="#player > div.player-center > div > button.playing.btn-circle.medium.play > i") public WebElement icon_stop_in_player;
+   
 	@FindBy(css=".icon-stop") public WebElement icon_stop;
 	@FindBy(css=".icon-pause") public WebElement icon_pause;
-	@FindBy(css="#player > div.player-right.ui-on-dark > button:nth-child(2) > span:nth-child(3)") 
-		public WebElement listenHistory;
-	@FindBy(css="#player > div.player-right.ui-on-dark > button:nth-child(1) > span:nth-child(3)")
+	
+		//@FindBy(css="#player > div.player-right.ui-on-dark > button:nth-child(2) > span:nth-child(3)") 
+	@FindBy(css="#player > div.player-right > button:nth-child(2) > span:nth-child(1)")	
+	   public WebElement listenHistory;
+	//@FindBy(css="#player > div.player-right.ui-on-dark > button:nth-child(1) > span:nth-child(3)")
+	@FindBy(css="#player > div.player-right > button:nth-child(1) > span:nth-child(3)")
 	    public WebElement myStations;
 	
 	
-	//@FindBy(css=".icon-more-horizontal") public WebElement icon_more_horizontal;
-	@FindBy(css=".more") public WebElement icon_more_horizontal;
-	
+	 @FindBy(css=".now-playing-options > button:nth-child(1)") public WebElement icon_more_horizontal;
+   
 	@FindBy(css="div.align-left:nth-child(3) > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(2) > a:nth-child(1)") public WebElement shareButton;
 	@FindBy(css="div.align-left:nth-child(3) > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(1) > a:nth-child(1)") public WebElement addToFavorite;
 	@FindBy(css=".dialog-title") public WebElement sharePageTitle;
@@ -190,11 +195,13 @@ public abstract class Page {
 	//thumbUp
 	@FindBy(css="button.medium:nth-child(2)") protected WebElement thumbUp_button;
 	
+	
 	@FindBy(css=".icon-thumb-up-unfilled") protected WebElement thumbUp;
 	@FindBy(css=".icon-thumb-up-filled") protected WebElement thumbUpDone;
 	 
     @FindBy(css="button.medium:nth-child(1)") protected WebElement thumbDown;
-
+    @FindBy(css=".icon-thumb-down-filled") protected WebElement thumbDownDone;
+	
 
 	//Add to favorite
 	@FindBy(css=".favorite") protected WebElement favorite;
@@ -205,7 +212,8 @@ public abstract class Page {
 	
 	
 	//FACE BOOK Signup info
-	public final String FACEBOOKemail = "iheartRadio.tribecca@gmail.com";
+	//public final String FACEBOOKemail = "iheartRadio.tribecca@gmail.com";
+	public final String FACEBOOKemail = "iheartRocks999@gmail.com";
 	public final String _PASSWORD = "iheart001";
 
    public static WebDriver driver;
@@ -214,12 +222,14 @@ public abstract class Page {
    
    public static String browser = "";
    
+   public static String URL = "";
+   
    public Page()
    {
 	   
    }
 	
-   public Page(WebDriver _driver)
+   public Page(WebDriver _driver)    
    {
 	   driver = _driver;
    }
@@ -271,6 +281,7 @@ public abstract class Page {
    }
    
    
+   
    public static void takeScreenshotInCloud(WebDriver driver, String testMethod) throws Exception 
    {      
 	       SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
@@ -298,40 +309,27 @@ public abstract class Page {
    
    public void login()
 	{   
-		//check driver here
-	    if (driver == null)  
-	    	System.out.println("Driver is null!");
-	    else 
-	    	System.out.println("Driver is OK!");
-	    	
-	    int count = 0;
-	    
+		int count = 0;    
 		do{
-			waitForElement(loginButton);
-			loginButton.click();
-			count++;
 			
-		}while (count < 6 && !driver.getPageSource().contains("Don't have an account?"));
+			try{
+			   loginButton.click();
+			   
+			}catch(Exception e)
+			{
+				
+			}
+			count++;
+		}while (count< 12 && !driver.getPageSource().contains("Don't have an account?"));
 		
-		//WaitUtility.sleep(1500);
+		
     	userName.sendKeys(FACEBOOKemail);
 	    passWord.sendKeys(_PASSWORD);
 	
 		login.click();
-		
-		WaitUtility.sleep(1000);
+		WaitUtility.sleep(2000);
 	}
 	
-  
-   
-   private void waitForElement(WebElement element)
-   {
-	   WebDriverWait wait = new WebDriverWait(driver, 60);
-	   wait.until(ExpectedConditions.elementToBeClickable(element));
-	  // element.click();
-   }
-   
-   
    
    private List<WebElement> getMyStations()
    {
@@ -373,11 +371,12 @@ public abstract class Page {
 	public void checkFavInProfile(String name)
 	{
 		System.out.println("checkFavInProfile().option_profile:" + option_profile.getText() );
-		WebElement option =  driver.findElement(By.cssSelector("div.dropdown-trigger:nth-child(1) > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(1) > a:nth-child(1)")) ;
+															
+		WebElement option =  driver.findElement(By.cssSelector("div.dropdown-trigger:nth-child(2) > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(1) > a:nth-child(1)")) ;
 		System.out.println("checkFavInProfile().option_profile VIA DRIVER:" + option.getText());
 		gotoSingedAccountOption(option,  "User");
 		
-		favoriteEpisodes.click();
+	//	favoriteEpisodes.click();
 		if (!driver.getPageSource().contains(name))
 		   errors.append(name + " is not added in profile -> Favorite Episodes.");
 	}
@@ -389,8 +388,7 @@ public abstract class Page {
 		System.out.println("It is playing:" + songPlaying);
 		
 		icon_skip.click();
-		WaitUtility.sleep(6000);
-		String nextSong = driver.findElement(By.className("player-song")).getText();
+		String nextSong = waitForElement(driver.findElement(By.className("player-song")), 3000).getText();
 		System.out.println("After skip:" + nextSong);
 		
 		
@@ -407,7 +405,6 @@ public abstract class Page {
 		System.out.println("It is playing:" + songPlaying);
 		
 		icon_scan.click();
-		WaitUtility.sleep(1000);
 		String nextSong = driver.findElement(By.className("player-song")).getText();
 		System.out.println("After skip:" + nextSong);
 		
@@ -417,7 +414,6 @@ public abstract class Page {
 	
 	public void search(String what)
 	{   searchBox.clear();
-		WaitUtility.sleep(400);
 		searchBox.sendKeys(what);
 		List<WebElement> resultRows = driver.findElements(By.className("search-section"));
 		System.out.println(resultRows.size() + " rows are suggested.");
@@ -426,7 +422,6 @@ public abstract class Page {
 	    	errors.append("Search doesn't generate the right result.");
 		
 		searchBox.clear();
-		WaitUtility.sleep(400);
 	}
 	
 	public void handleError(String msg, String methodName) 
@@ -454,25 +449,24 @@ public abstract class Page {
 		return errors;
 	}
 	
-	
-	
 	public void signUp()
-	{
+	{  
 		//Signup 
 		//tweak email so that we won't get user already singed up error 
 		String  randomEmail_firstPart = getCurrentDateInMilli();
-		String _email = randomEmail_firstPart + "@gmail.com";
+		//String _email = randomEmail_firstPart + "@gmail.com";
+		String _email = randomEmail_firstPart + "@mailinator.com";
 		System.out.println("See randomEmail:" + _email);
-		WaitUtility.sleep(800);
-	    email.sendKeys(_email);
+		
+	    waitForElement(email, 10000).sendKeys(_email);
 	    password.sendKeys(_PASSWORD);
 	    zipCode.sendKeys("10013");
-	    new Select(birthYear).selectByVisibleText("1980");
-	    gender_female.click();
-	    termsAcceptanceDate.click();
+	    new Select(birthYear).selectByIndex(20);
+	    
+	    waitForElement(gender_female, 1000).click();
+	   // termsAcceptanceDate.click();
 	    signUp.click();
 	    
-	    WaitUtility.sleep(2000);
 	    System.out.println("see signed account:" + signedAccount.getText() );
 	    signedAccount.click();
 	    
@@ -481,19 +475,25 @@ public abstract class Page {
 	    
 	}
 	
+	
+	
 	public void makeSureItIsPlaying()
 	{   
 	    try{
-
-		 //   icon_play.isDisplayed();
-	        icon_play.getAttribute("class");
+	    	//icon_play_inPlayer.isDisplayed();//isDisplayed() is not working against iheart elements
+	    	icon_play_inPlayer.getAttribute("outerHTML");
 		    System.out.println("Music is not playing. About to click.");
-	
-			icon_play.click();
-
+	        if (icon_play_inPlayer.isEnabled())
+		       icon_play_inPlayer.click();
+	        else     //CLick on play button in hero
+	        {  
+	        	try{
+	        	   driver.findElement(By.cssSelector("#hero > div.hero-content > div > div.profile-info > div > button > i")).click();
+	        	}catch(Exception e) {}   
+	        }	
 	    }catch(Exception e)
-
-	    {   System.out.println("Music is playing. ");
+	    {   
+	    	System.out.println("Music is playing. ");
 	    	return;
 	    }
 	    
@@ -504,46 +504,12 @@ public abstract class Page {
 	//to be done
 	public void handlePreRoll()
 	{   
-		 WaitUtility.sleep(35000);
+		 WaitUtility.sleep(48000);
+		 
 	}
 	
-	public void handlePreRoll_obsolete()
-	{   
-		  int milliSeconds = 0;
-		  //Wait for pre-roll if adContainer is detected
-	      String duration = driver.findElement(By.cssSelector(".seconds")).getText();
-		   System.out.println("duration:" + duration);
-		   if (duration!= null && duration.length()>0)
-		   {
-			   milliSeconds = (Integer.parseInt(duration))*1000;
-		       System.out.println("Pre-roll will last (:milliSeconds):" + milliSeconds );
-		       WaitUtility.sleep(milliSeconds + 5000);
-		   }else
-		   {
-			   System.out.println("No pre-roll is detected.");
-		   }
-		
-	}
 	
-	public void handlePreRoll_OLD()
-	{
-		//Wait for pre-roll if adContainer is detected
-		   try {
-			   if (adContainer.isDisplayed() && adContainer.isEnabled())
-			   {	
-				   System.out.println("Pre-roll is taking over the planet. Wait...");
-				   String duration = driver.findElement(By.cssSelector(".seconds")).getText();
-				   System.out.println("duration:" + duration);
-				   int milliSeconds = (Integer.parseInt(duration))*1000;
-				   System.out.println("milliSeconds:" + milliSeconds );
-				   WaitUtility.sleep(milliSeconds);
-			   
-			   }
-		   }catch(Exception e)
-		   {   e.printStackTrace();
-			   System.out.println("No pre-roll is detected.");
-		   }
-	}
+	
 	
 	public void makeSureItIsPlayingWithNoWait()
 	{   
@@ -561,28 +527,50 @@ public abstract class Page {
 	}
 	
 	//to by-pass the pre-roll
-	public void makeSureItIsNotPlaying()
+	public void makeSureItIsNotPlaying_old()
 	{   boolean isPlaying = true;
 
 	    try{
 
-		    icon_play.isDisplayed();
-	
+		   // icon_play.isDisplayed();
+	    	icon_play_inPlayer.isDisplayed();
 		    System.out.println("Music is not playing. Good");
 
 	    }catch(Exception e)
 
 	    {   System.out.println("Music is playing. click to stop it ");
-	    	icon_play.click();
+	    	icon_play_inPlayer.click();
 		
 	    	//Wait for pre-roll
 	
-	    	WaitUtility.sleep(35000);
+	    	handlePreRoll();
 
 	    	return;
+	    	
 
 	    }
 	}
+	
+	
+	//to by-pass the pre-roll
+		public void makeSureItIsNotPlaying()
+		{   boolean isPlaying = false;
+
+		    try{
+		    	icon_stop_in_player.getAttribute("class");
+                System.out.println("Is playing.. click to stop.");
+                isPlaying = true;
+		    }catch(Exception e)
+		    {  
+		    	isPlaying = false;
+
+		    }
+		    
+		    if (isPlaying)
+		    	icon_stop_in_player.click();
+		    
+		}
+	
 	
 	public static String getBrowser()
 	{
@@ -595,40 +583,14 @@ public abstract class Page {
 	}
 	
 	
-	public void gotoExplorerOption(WebElement option, String expectedTitle)
-	{   int count = 0;
-		Actions action = new Actions(driver);
-		do {
-			action = action.moveToElement(explorer);
-			//action = action.click(explorer);
-			WaitUtility.sleep(500);
-			try {
-			   action.moveToElement(option).click().build().perform();
-				
-			}catch(Exception e)
-			{
-				
-			}
-			WaitUtility.sleep(1500);
-			count++;
-		}while(count < 5 && !driver.getTitle().contains(expectedTitle));	
-		
-		if (Page.getBrowser().equalsIgnoreCase("chrome"))
-			WaitUtility.sleep(1500);
-		else
-			WaitUtility.sleep(500);
-	}
-	
-	
 	public void gotoSingedAccountOption(WebElement option, String expectedTitle)
 	{  // limit try to 5 times
 		int count = 0;
 		
 		Actions action = new Actions(driver);
 		do {
-				
-			action = action.moveToElement(signedAccount);
-			WaitUtility.sleep(1500);
+		    action = action.moveToElement(signedAccount);
+			
 			try{
 		    	action.moveToElement(option).click().build().perform();
 			}catch(Exception e)
@@ -636,7 +598,6 @@ public abstract class Page {
 				
 			}
 			
-			WaitUtility.sleep(500);
 			System.out.println("See title:" + driver.getTitle());
 			count++;
 		
@@ -645,48 +606,240 @@ public abstract class Page {
 	
 	
 	public void doThumbUp(String methodName)
-	{  
-	    WaitUtility.sleep(1000);
-		//Sometimes the thumbUp button is disabled, keep scan(At most 10 times though to avoid hang) until thumbUpiCON is enabled.
-		int count = 0; 
-		while(!thumbUp_button.isEnabled() && count < 3)
+	{  	int count = 0; 
+		
+		//Try a little bit more
+		while(isThumbUpDisabled() && count < 3)
 		{	System.out.println("thumbUp button is disabled. Scan now..");
-			icon_scan.click();
+		    try{
+			   icon_scan.click();
+		    }catch(Exception e)
+		    {   
+		    	
+		    }
 			count++;
-			WaitUtility.sleep(2000);
 		}
+		
+		//if it is still disabled, return 
+		if(isThumbUpDisabled()) return;
+		
 		//If this is thumbUp before, double-click
-		try{
-			if (thumbUpDone.isDisplayed())
-				thumbUpDone.click(); 
-		}catch(Exception e)
-		{
-			
+		if (isThumbUpDone())
+		{	
+			return;
 		}
-		thumbUp.click();
-		WaitUtility.sleep(500);
+		try{
+		   thumbUp.click();
+		} catch(Exception e)
+		{
+			System.out.println("Hit the commercial time. return now.");
+			return;
+		}
 		
-		//check to make sure that thumpUp Icon is filled
-		
-	    if (!thumbUpDone.isDisplayed())
+
+		//ThumbUp/Down spec has changed per web-5588. Drop this part so that I can modify it after I come back from vacation
+
+	    /*
+		if (!isThumbUpDone())
 			handleError("Favorite icon is not highlighted.", methodName);
-		
-		
+		*/
+		//COMMENT OFF FOR now since the rule has changed. Will implement new rule after vacation
+
+		/*
 		String response = driver.findElement(By.className("growls")).getText();
 		System.out.println("See growls:" + response);
 		if (!(response.contains("Glad you like") || response.contains("Thanks for your feedback")))
 			handleError("Thump Up is not working properly.", methodName);
+		*/	
 	}
+	
+	private boolean isThumbUpDone()
+	{
+		
+		boolean isDone = false;
+		try{
+			String innerHTML = thumbUp_button.getAttribute("innerHTML");
+			
+			System.out.println("Is thumpUp done? see innerhtml:" + innerHTML );
+			  
+		   isDone = innerHTML.contains("-filled");
+		   
+		}catch(Exception e)
+		{
+			
+		}
+		return isDone;
+	}
+	
+	
+	private boolean isThumbDownDone()
+	{
+		
+		boolean isDone = false;
+		try{
+			String innerHTML = thumbDown.getAttribute("innerHTML");
+			
+			System.out.println("Is thumpDown done? see innerhtml:" + innerHTML );
+			  
+		   isDone = innerHTML.contains("-filled");
+		   
+		}catch(Exception e)
+		{
+			
+		}
+		return isDone;
+	}
+	
+	
+	private boolean isThumbUpDisabled()
+	{
+		
+		boolean isDisabled = false;
+		try{
+			//System.out.println("Is thumpUp html:" + thumbUp_button.getAttribute("innerHTML") );
+			String outerHTML = thumbUp_button.getAttribute("outerHTML");
+			
+			System.out.println("Is thumpUp outerhtml:" + outerHTML );
+			
+			
+			//System.out.println("Is thumpUp disabled:" + thumbUp_button.getAttribute("disabled") );
+		   
+		   isDisabled = outerHTML.contains("disabled");
+		   
+		}catch(Exception e)
+		{
+			
+		}
+		return isDisabled;
+	}
+	
+	public void doThumbDown(String methodName)
+	{  	int count = 0; 
+		
+		//Try a little bit more
+		while(isThumbDownDisabled() && count < 3)
+		{	System.out.println("thumbDown button is disabled. Scan now..");
+		    try{
+			  icon_scan.click();
+			  count++;
+		    }catch(Exception e)
+		    {
+		    	
+		    }
+			WaitUtility.sleep(2000); //Do not remove this .sleep()
+		}
+		
+		//if it is still disabled, return 
+		if(isThumbDownDisabled()) return;
+		
+		//If this is thumbUp before, double-click
+		
+		
+		if (isThumbDownDone())
+		{	
+			return;
+		}
+		try{
+		   thumbDown.click();
+		} catch(Exception e)
+		{
+			System.out.println("Hit the commercial time. return now.");
+			return;
+		}
+		
+		
+		//check to make sure that thumpUp Icon is filled
+	  
+		//ThumbUp/Down spec has changed per web-5588. Drop this part so that I can modify it after I come back from vacation
+
+	   /*
+		if (!isThumbDownDone())
+			handleError("Favorite icon is not highlighted.", methodName);
+		*/
+		//COMMENT OFF FOR now since the rule has changed. Will implement new rule after vacation
+
+		/*
+		String response = driver.findElement(By.className("growls")).getText();
+		System.out.println("See growls:" + response);
+		if (! response.contains("Thanks for your feedback"))
+			handleError("Thump Down is not working properly.", methodName);
+<<<<<<< HEAD
+		*/
+
+	}
+	
+	public boolean isThumbDownDisabled()
+	{
+		boolean isDisabled = false;
+		try{
+		   
+		   String outerHTML = waitForElement(thumbDown, 10000).getAttribute("outerHTML");
+			
+			System.out.println("Is thumpDown outerhtml:" + outerHTML );
+			
+		   
+		   isDisabled = outerHTML.contains("disabled");
+		   
+		}catch(Exception e)
+		{
+			
+		}
+		return isDisabled;
+	}
+	
 	
 	public void doFavorite(String methodName)
 	{
 		 //If the chosen show/song is faved before, double click; 
+		boolean isFavoredAlready = false;
+		System.out.println("See class:" + top_favorite_icon.getAttribute("class"));
+		if ((top_favorite_icon.getAttribute("class")).contains("-filled"))
+			isFavoredAlready = true;
+		
+	    if (isFavoredAlready)
+	    {  
+	    	try{
+	        	top_favorite_icon.click();
+	    	}catch(Exception e)
+	    	{     
+	    		   top_favorite_icon.click();
+	    	}
+	      
+	    }
+	    
+	    
+	   top_favorite_icon.click();
+	   System.out.println("See class again:" + top_favorite_icon.getAttribute("class"));
+	   if (top_favorite_icon.getAttribute("class").contains("-unfilled"))
+	   {
+		   handleError("Favorite icon is not highlighted.", methodName);
+	   }
+		
+	   //Check that growls show up
+	   String _growls = growls.getText();
+		System.out.println("See growls:" + _growls);
+	
+		if (!_growls.contains("Favorite"))
+		   handleError("Add to Favorite failed.", methodName);
+	   
+	}
+	
+	public void doFavorite_OLD(String methodName)
+	{
+		 //If the chosen show/song is faved before, double click; 
+		boolean isFavoredAlready = false;
 	    try{
-		   if (icon_favorite_filled.isDisplayed())
+		   icon_favorite_filled.getAttribute("class");
+		   isFavoredAlready = true;
+	    }catch(Exception e)
+	    {
+	    	
+	    }
+		
+	    try{
+		   if (isFavoredAlready)
 		   {  
 			   icon_favorite_filled.click();
-		       //WaitUtility.sleep(1000);
-			   WaitUtility.waitForAjax(driver);
 		   }
 	    }catch(Exception e)
 	    {
@@ -714,18 +867,38 @@ public abstract class Page {
 	   
 	}
 	
-	public boolean isSoftGateShow()
-	{   WaitUtility.sleep(2000);
+	public boolean isSoftGateShow_old()
+	{  
 	    try{
-	       System.out.println(signupHint.getText());
+	       signupHint.getText();
 	    }catch(Exception e)
-	    {
-	       System.out.println("Soft gate is not shown.");
-	       return false;
-	    		   
+	    { // e.printStackTrace();
+	       System.out.println("Soft gate is not shown. Give it more time");
+	      
+	       try{
+	    	   System.out.println(signupHint.getText());
+	    	   
+	       }catch(Exception ex)
+	       {
+	    	   return false;
+	       }
+	       
 	    }
-		return signupHint.getText().contains("Have an account?");
+	    return signupHint.getText().contains("Sign Up");
 	}
+	
+ 
+       public boolean isSoftGateShow()
+   	{   	
+	    WebElement signupButton = null;
+		
+		signupButton = waitForElement(driver.findElement(By.cssSelector("button.btn:nth-child(7)")), 48000);
+	
+	  
+		//return signupHint.getText().contains("Have an account?");
+		return signupButton.getText().contains("Sign Up");
+	}
+
 	
 	
 	public void verifyPlayer(String category)
@@ -734,13 +907,12 @@ public abstract class Page {
 	}
 	
 	
-	
-	public void verifyPlayer(String category, String testMethod)
+	public void verifyPlayer_old(String category, String testMethod)
 	{   boolean isPlaying = false;
 	    try{
 	    	if (icon_pause.isDisplayed())
 	    	{	isPlaying = true;
-	    		System.out.println("It is  playing. Good" );
+	    		System.out.println(category + " is  playing. Good" );
 	    	}
 	    }catch(Exception e)
 	    {   
@@ -763,6 +935,20 @@ public abstract class Page {
 		
 	}
 	
+	public void verifyPlayer(String category, String testMethod)
+	{   
+	    
+		if (!isPlaying())
+		    handleError("The " + category + " is not playing.", testMethod);
+		
+	}
+	
+	private boolean isPlaying()
+	{
+		String outHTML = playButton.getAttribute("outerHTML");
+		return (!outHTML.contains("icon-play"));
+	}
+	
 	
 	public void playAstation()
 	{
@@ -779,19 +965,51 @@ public abstract class Page {
 	
 	
 	public void faceBookSignUp()
-	{
-		faceBook.click();
+	{   
+		try{
+		   waitForElement(faceBook, 18000).click();
+		}catch(Exception e)
+		{
+			faceBook.click();
+		}
+        //Give it some time for the window to popup		
+		WaitUtility.sleep(1000);  
 		String winHandleBefore = switchWindow();
 		
 		faceEmail.sendKeys(FACEBOOKemail);
+		
 		facePass.sendKeys("iheart001");
 		faceLogin.click();
 	    
-	    WaitUtility.sleep(2000);
 	    
 	    driver.switchTo().window(winHandleBefore);
 	}
 	
+	public void waitForSignUp()
+	{
+		int count = 0;
+		while (count < 6)
+		{	
+			if (!isSignUpShown()) 
+			{	
+				WaitUtility.sleep(6*1000);
+				count++;
+				System.out.println("Waited for signup:" + count + " time(s)");
+			}else 
+				break;
+		}	
+	}
+	
+	private boolean isSignUpShown()
+	{
+		try{
+			driver.findElement(By.cssSelector("#dialog > div > div.dialog.ui-on-grey > div.wrapper > header > h2")).getText();
+		    return true;
+		}catch(Exception e)
+		{   
+			return false;
+		}
+	}
 	
 	public void shareOnfaceBook()
 	{
@@ -801,8 +1019,117 @@ public abstract class Page {
 		faceEmail.sendKeys(FACEBOOKemail);
 		facePass.sendKeys("iheart001");
 		faceLogin.click();
-	    WaitUtility.sleep(1000);
 	    shareOnFacebook.click();
 	    driver.switchTo().window(winHandleBefore);
 	}
+	
+	public void clickOnTopPlayButton()
+	{
+		 try{
+		       driver.findElement(By.cssSelector("button.idle:nth-child(1)")).click();
+		    }catch(Exception e)
+		    {
+		    	
+		    }
+	}
+	
+	
+	public void scrollDown()
+	{
+		scrollDown(250);
+	}
+	
+	
+	public void scrollDown(int offset)
+	{
+		JavascriptExecutor jse = (JavascriptExecutor)driver;
+		String script = "window.scrollBy(0," + offset + ")";
+		System.out.println("See script:" + script);
+		//jse.executeScript("window.scrollBy(0,_offset)", "");
+		jse.executeScript(script, "");
+	}
+	
+	public void gotoSingedAccountOption_direct(String option)
+	{   String newURL ="";
+		String currentURL = driver.getCurrentUrl();
+		System.out.println("SEE current url:"  + currentURL);
+	    String part1 = currentURL.split("//")[0];
+	    String part2  = currentURL.split("//")[1].split("/")[0];
+	    
+	   if (option.equalsIgnoreCase("Profile"))
+		   newURL = part1 + "//" + part2 + "/my/stations/" ;
+	   else  if (option.equalsIgnoreCase("My Station"))
+		   newURL = part1 + "//" + part2 + "/my/stations/" ;
+	   else  if (option.equalsIgnoreCase("Listen History"))
+		   newURL = part1 + "//" + part2 + "/my/history/" ;
+	   if (option.equalsIgnoreCase("Friends"))
+		   newURL = part1 + "//" + part2 + "/my/friends/" ;
+	   else  if (option.equalsIgnoreCase("Settings"))
+		   newURL = part1 + "//" + part2 + "/my/settings/" ;
+	  
+	   
+	   System.out.println("SEE new url:"  + newURL );
+		
+		driver.get(newURL);
+		 
+	}
+	
+	//Need to optimize the code to reduce the redundency
+	
+	public static void gotoMyStationPage_direct()
+	{   String currentURL = driver.getCurrentUrl();
+		System.out.println("SEE current url:"  + currentURL);
+	    String part1 = currentURL.split("//")[0];
+	    String part2  = currentURL.split("//")[1].split("/")[0];
+	    
+	    String newURL = part1 + "//" + part2 + "/my/stations/" ;
+		System.out.println("SEE new url:"  + newURL );
+		
+		driver.get(newURL);
+	}
+	
+	public static void gotoMyListenHistoryPage_direct(){
+		String currentURL = driver.getCurrentUrl();
+		System.out.println("SEE current url:"  + currentURL);
+	    String part1 = currentURL.split("//")[0];
+	    String part2  = currentURL.split("//")[1].split("/")[0];
+	    
+	    String newURL = part1 + "//" + part2 + "/my/history/" ;
+		System.out.println("SEE new url:"  + newURL );
+		
+		driver.get(newURL);
+	}
+	
+
+	public static void gotoFriendPage_direct(){
+		String currentURL = driver.getCurrentUrl();
+		System.out.println("SEE current url:"  + currentURL);
+	    String part1 = currentURL.split("//")[0];
+	    String part2  = currentURL.split("//")[1].split("/")[0];
+	    
+	    String newURL = part1 + "//" + part2 + "my/friends/" ;
+		System.out.println("SEE new url:"  + newURL );
+		
+		driver.get(newURL);
+		
+	}
+	
+	
+	public static void setURL(String url)
+	{
+		URL = url;
+	}
+	
+	public static String getURL()
+	{
+		return URL;
+	}
+	
+	
+	public static WebElement waitForElement(WebElement element, long timeOutInMilliSecond)
+	{  
+		return WaitUtility.waitForElement(driver, element, timeOutInMilliSecond);
+	}
+		
+	
 }

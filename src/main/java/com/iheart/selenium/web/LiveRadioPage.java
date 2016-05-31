@@ -10,30 +10,32 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.interactions.Actions;
 
-import com.iheart.proxyLight.*;
-
 import static org.junit.Assert.*; 
 
 
 public class LiveRadioPage extends Page {
-	
-	@FindBy(css="li.tile:nth-child(1) > div:nth-child(1) > div:nth-child(1) > a:nth-child(1) > div:nth-child(2) > button:nth-child(2)")
-		private WebElement firstLive;
-	@FindBy(css="li.tile:nth-child(1) > div:nth-child(1) > div:nth-child(2) > a:nth-child(1)")
-        private WebElement firstLiveTextLink;
-	
-	//Volume
+		@FindBy(css="#main > div.directory-live > section > ul > li:nth-child(1) > div > div.station-thumb-wrapper.ui-on-dark > a > div.hover > button > i")
+			private WebElement firstLive;
+		@FindBy(css="li.tile:nth-child(1) > div:nth-child(1) > div:nth-child(2) > a:nth-child(1)")
+
+			private WebElement firstLiveTextLink;
+		
+		//Volume
 		@FindBy(css=".volume > button:nth-child(1)") public WebElement volumeButton;
 		@FindBy(css="#player > div.player-center > div > div > button > i") public WebElement iconMute;
 		
 		//Filter station
-		@FindBy(css="#main > div > div > div.form-group.ui-inline-block.country-filter > div > select") public WebElement country;
-		@FindBy(css="#main > div > div > div.form-group.ui-inline-block.market-filter > div > select") public WebElement city;
-		@FindBy(css="#main > div > div > div.form-group.ui-inline-block.genre-filter > div > select") public WebElement genres;
-		@FindBy(css="#main > div > section > ul > li:nth-child(1) > div > div.station-thumb-wrapper.ui-on-dark > a > div.hover > button > i") public WebElement firstStation;
-		@FindBy(css="#main > div > section > ul > li:nth-child(1) > div > div.station-text > a") public WebElement firstStationLabel;
-		@FindBy(css=".player-station") public WebElement stationPlaying;
+		@FindBy(css=".country-filter > div:nth-child(1) > select:nth-child(2)") public WebElement country;
+		@FindBy(css=".market-filter > div:nth-child(1) > select:nth-child(2)") public WebElement city;
+		@FindBy(css="div.form-group:nth-child(3) > div:nth-child(1) > select:nth-child(2)") public WebElement genres_dropDown;
+		@FindBy(css=".header-menu-main > li:nth-child(4) > a:nth-child(1)")  public WebElement genres;
 		
+		//@FindBy(css="li.tile:nth-child(1) > div:nth-child(1) > div:nth-child(1) > a:nth-child(1) > div:nth-child(2) > button:nth-child(2)") 
+		@FindBy(css="#main > div.directory-live > section > ul > li > div > div.station-thumb-wrapper.ui-on-dark > a > div.hover > button > i")
+		    public WebElement firstStation;
+		@FindBy(css="li.tile:nth-child(1) > div:nth-child(1) > div:nth-child(2) > a:nth-child(1)") public WebElement firstStationLabel;
+		@FindBy(css=".player-station") public WebElement stationPlaying;
+	
 		//AFTER SEARCH
 		@FindBy(css=".selected > div:nth-child(2) > p:nth-child(1) > a:nth-child(1)") private WebElement firstSearchResult;
 		
@@ -42,19 +44,13 @@ public class LiveRadioPage extends Page {
 		
 		//International
 		@FindBy(css="#main > div > section > ul > li:nth-child(1) > div > div.station-thumb-wrapper.ui-on-dark > a > div.hover > button > i") public WebElement firstINT;
-		@FindBy(css="#hero > div.hero-content > div > div.profile-info > div > button > i") public WebElement firstINT_playButton;
+		//@FindBy(css="#hero > div.hero-content > div > div.profile-info > div > button > i") public WebElement firstINT_playButton;
 		@FindBy(css="#player > div.player-center > div > button.playing.btn-circle.medium.play > i") public WebElement firstINT_stopPlayButton;
 		
 		//autoPlay
 		@FindBy(css="#main > div > section > ul > li:nth-child(1) > div > div.station-text > a") public WebElement liveRadio_firstLink;
 		@FindBy(css="#hero > div.hero-content > div > div.profile-info > div > button > i") public WebElement player_stopButton;
 		
-		//Play/stop/resume/scan
-		//@FindBy(css="#player > div.player-center > div > button.idle.btn-circle.medium.play > i") public WebElement icon_play;
-		//@FindBy(css="#player > div.player-center > div > button.playing.btn-circle.medium.play > i") public WebElement icon_stop;
-		
-	//	@FindBy(css="#player > div.player-center > div > button.btn.text.no-border.xsmall > span") public WebElement icon_scan;
-		//@FindBy(css="#player > div.player-left > div.player-info > a.player-artist.type-secondary.type-xsmall") public WebElement songPlaying;
 		@FindBy(css=".player-artist") public WebElement songAfterSkip;
 		
 		//Volume Bar
@@ -85,27 +81,16 @@ public class LiveRadioPage extends Page {
     
     public void WEB_11753_favStationAndListenHistoryOnPlayer()
     {
-    	//for users not sign in
-    	//gotoExplorerOption(option_liveRadio, "Live");
+    	
     	comeToThisPage_direct();
 		firstLive.click();
 		
-		try{
-		    icon_play.isDisplayed();
-		    System.out.println("Music is not playing. About to click.");
-			icon_play.click();
-
-	    }catch(Exception e)
-
-	    {   System.out.println("Music is playing. ");
-	    	return;
-	    }
 		
-		//Click on Add to Favorite link
+		makeSureItIsPlaying();
 		
 		addToFavoriteFromPlayer();
 		
-		handlePreRoll();
+		//handlePreRoll();
 		//is softgate show up?
 		if (!isSoftGateShow())
 			handleError("Sing up page is not displayed after unauthorized user clicks on Add To Favorite button.", "WEB_11753_favStationAndListenHistoryOnPlayer");
@@ -133,8 +118,6 @@ public class LiveRadioPage extends Page {
     
     public void WEB_11748_ThumbUpAndDownLiveWithoutLogin()
     {
-    	
-    	//gotoExplorerOption(option_liveRadio, "Live");
     	comeToThisPage_direct();
 		firstLive.click();
 		makeSureItIsPlaying();
@@ -153,7 +136,6 @@ public class LiveRadioPage extends Page {
     public void WEB_11750_filterLiveStationAfterLogin()
     {
     	login();
-    	//gotoExplorerOption(option_liveRadio, "Live");
     	comeToThisPage_direct();
     	filterStation();
     	String chosenStation = firstStation.getText();
@@ -162,16 +144,44 @@ public class LiveRadioPage extends Page {
 		makeSureItIsPlaying();
 		//Verify it is playing
 	    verifyPlayer("filtered station");
-		
-		//verify that station is saved under Listen Hisotry and My Station page
-	    listenHistory.click();
+	   
+	    try{	
+	       listenHistory.click();
+	    }catch(Exception e)
+	    {
+	       //Click on More ...., then ListenHistory
+	    	Actions action = new Actions(driver);
+	    													
+	    	WebElement we = driver.findElement(By.cssSelector("#player > div.player-left > div.dropdown-trigger.align-right.align-bottom.now-playing-options.hide > div:nth-child(1) > button > i"));
+	    													    
+	    		try{
+	    	  action.moveToElement(we).moveToElement(driver.findElement(By.cssSelector("#player > div.player-left > div.dropdown-trigger.align-right.align-bottom.now-playing-options > div > nav > ul > li:nth-child(4) > a"))).click().build().perform();
+	    	}catch(Exception eX)
+	    	{
+	    		
+	    	}
+	    }
 	    if (!driver.getPageSource().contains(chosenStation))
 	    	handleError("Filtered station is not added to listen history.", "WEB_11750_filterLiveStationAfterLogin");
-    	
-	    myStations.click();
+
+    	/*
+	    try{
+	        myStations.click();
+	    }catch(Exception e)
+	    {
+	    	 //Click on More ...., then ListenHistory
+	    	Actions action = new Actions(driver);
+	    	WebElement we = driver.findElement(By.cssSelector("#player > div.player-left > div.dropdown-trigger.align-right.align-bottom.now-playing-options > button > i"));
+	    	try{
+	    		action.moveToElement(we).moveToElement(driver.findElement(By.cssSelector("#player > div.player-left > div.dropdown-trigger.align-right.align-bottom.now-playing-options > div > nav > ul > li:nth-child(3) > a"))).click().build().perform();
+		    }catch(Exception eX)
+	    	{
+	    		
+	    	}
+	    }
 	    if (!driver.getPageSource().contains(chosenStation))
 	    	handleError("Filtered station is not added to My Stations page.", "WEB_11750_filterLiveStationAfterLogin");
-    	
+    	*/
     }
 	    
     public void WEB_11757_liveShare()
@@ -179,10 +189,10 @@ public class LiveRadioPage extends Page {
 		login();
 		search("Elvis Duran");
 		firstSearchResult.click();
-	
-		WaitUtility.waitForAjax(driver);
-		addToFavoriteFromPlayer();
-	
+		
+	    makeSureItIsPlaying();
+		
+		shareFromPlayer();
 		//Verify that we are on share page now
 		System.out.println("Share page title: " + sharePageTitle.getText());
 	
@@ -193,7 +203,7 @@ public class LiveRadioPage extends Page {
 		shareOnfaceBook();
 	}    
     
-    private void addToFavoriteFromPlayer()
+    private void addToFavoriteFromPlayer_obsolete()
     {
     	Actions builder = new Actions(driver);
 		builder = builder.moveToElement(icon_more_horizontal);
@@ -202,11 +212,66 @@ public class LiveRadioPage extends Page {
 			builder.moveToElement(shareButton).click().build().perform();
 		}catch(Exception e)
 		{
-			
+			e.printStackTrace();
 		}
     }
     
-	    
+    private void addToFavoriteFromPlayer()
+    {
+    	if (Page.getBrowser().equals("chrome"))
+    	{
+    		try{
+    		   driver.findElement(By.cssSelector("#player > div.player-left > div.dropdown-trigger.align-right.align-bottom.now-playing-options.hidden-sm > button")).click();
+    		}catch(Exception e)
+    		{   
+    			driver.findElement(By.cssSelector("#player > div.player-left > div.dropdown-trigger.align-right.align-bottom.now-playing-options.hidden-sm > button")).click();
+    		}
+    		
+    	    driver.findElement(By.cssSelector("#player > div.player-left > div.dropdown-trigger.align-right.align-bottom.now-playing-options.hidden-sm > div > nav > ul > li:nth-child(1) > a")).click();
+    	}else
+    	{
+    		driver.findElement(By.cssSelector(".align-bottom > button:nth-child(1)")).click();
+    		//driver.findElement(By.cssSelector(".now-playing-options > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(1) > a:nth-child(1)")).click();
+    		driver.findElement(By.cssSelector(".align-bottom > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(1) > a:nth-child(1)")).click();
+    
+    	}
+    }	
+    
+    private void shareFromPlayer()
+    {
+    	int count = 0;
+		boolean shared = false;
+		WebElement we;
+		Actions action = new Actions(driver);
+		do {
+			we = driver.findElement(By.cssSelector(".align-bottom > button:nth-child(1)"));
+		    action = action.moveToElement(we);
+			try{
+		    	//action.moveToElement(option_logout).click().build().perform();
+				 action.moveToElement(driver.findElement(By.cssSelector(".align-bottom > div:nth-child(2) > nav:nth-child(2) > ul:nth-child(1) > li:nth-child(3) > a:nth-child(1)"))).click().build().perform();
+				 
+			}catch(Exception e)
+			{
+			   e.printStackTrace();
+			}
+			
+			count++;
+		}while(count <5 && !isShared());	
+    	
+    	
+    }
+       
+    private boolean isShared()
+    {
+    	try{
+    		return (driver.findElement(By.cssSelector("#dialog > div > div.dialog.ui-on-grey > div.wrapper > header > h2")).getText()).equals("Share");
+    	}catch(Exception e)
+    	{
+    		return false;
+    	}
+    }
+    
+    
 	public void WEB_14441_mutePlayer()
 	{   
 		//gotoExplorerOption(option_liveRadio, "Live");
@@ -219,34 +284,33 @@ public class LiveRadioPage extends Page {
 	
 	public void WEB_11744_filterStation()
 	{   
-		//gotoExplorerOption(option_liveRadio, "Live");
+		
 	    comeToThisPage_direct();
 		
 		filterStation();
 		String chosenStation = firstStationLabel.getText();
 		System.out.println("chosen station:" + chosenStation);
 		firstStation.click();
-		WaitUtility.sleep(1000);
-		
-		String playingStation = stationPlaying.getText();
+		//give it one second in case the machine is slow
+		//No way to remove this sleep cos we have to wait for the new statin info is loaded! Otherwise it will grab the old station name!
+		WaitUtility.sleep(1000); //DO NOT REMOEVE this line!
+		String playingStation = waitForElement(stationPlaying, 8000).getText();
 		System.out.println("station PLAYING:" + playingStation);
 		
 		makeSureItIsPlaying();
-		
 		
 		if (!chosenStation.equalsIgnoreCase(playingStation))
 			handleError("Filter is not working.", "WEB_11744_filterStation");
 	}
 	
 	private void filterStation()
-	{
+	{   
 		new Select(country).selectByVisibleText("Mexico");
-		WaitUtility.sleep(2000);
-		//new Select(city).selectByIndex(3);
+		WaitUtility.sleep(1000);
 		new Select(driver.findElement(By.name("city"))).selectByIndex(1);
 		WaitUtility.sleep(1000);
-		new Select(genres).deselectByIndex(2);
-	}
+	    new Select(genres_dropDown).selectByIndex(2);  
+	}		  
 
 	public void WEB_11745_International()
 	{  
@@ -256,17 +320,16 @@ public class LiveRadioPage extends Page {
 		int count = 0;
 		
 		do{
-		  new Select(city).selectByVisibleText("All Stations, INT");
-		  WaitUtility.sleep(500);
+		  new Select(city).selectByVisibleText("All Cities");
 		  count++;
 		}while(!h3_header.getText().contains("All Stations, INT") && count < 5);
 		
-		WaitUtility.waitForAjax(driver);
+	
 		
-		firstINT.click();
-		WaitUtility.waitForAjax(driver);
-		firstINT_playButton.click();
-		WaitUtility.waitForAjax(driver);
+		//firstINT.click();
+	//	firstINT_playButton.click();
+		driver.findElement(By.cssSelector("#main > div.directory-live > section > ul > li:nth-child(2) > div > div.station-thumb-wrapper.ui-on-dark > a > div.hover > button > i")).click();
+		makeSureItIsPlaying();
 		
 		//Verify that it is indeed playing
 		if (!firstINT_stopPlayButton.getAttribute("class").equalsIgnoreCase("icon-stop"))
@@ -279,10 +342,8 @@ public class LiveRadioPage extends Page {
 		comeToThisPage_direct();
 		
 		firstLiveTextLink.click();
-		WaitUtility.sleep(1000);
 		System.out.println("SEE new url:"  + driver.getCurrentUrl()+ "?autoplay=true" );
 		driver.get(driver.getCurrentUrl()+ "?autoplay=true");
-		WaitUtility.sleep(1000);
 		//verify that the player is indeed playing
 		verifyPlayer("Auto Play", "WEB_11796_LiveStationAutoPlay");
 		
@@ -301,15 +362,27 @@ public class LiveRadioPage extends Page {
 		
 		makeSureItIsPlaying();
 		
-		icon_stop.click();
+		try {
+		 icon_stop.click();
+		}catch(Exception e)
+		{
+			WaitUtility.sleep (20*1000);
+			icon_stop.click();
+		}
 		
 		icon_play.click();
 		//here, get the song that is playing
 		String songTitle = player_song.getText();
 		System.out.println("song playing:" + songTitle);
 		icon_scan.click();
-		WaitUtility.sleep(1000);
-		String songAfter = player_song.getText();
+		String songAfter = "";
+		try{
+		  songAfter =player_song.getText();
+		}catch(Exception e)
+		{
+			System.out.println("Hit the commercial.. ");
+			return;
+		}
 		System.out.println("after skip:"  + songAfter);
 		if (songTitle.equalsIgnoreCase(songAfter))
 			handleError("Scan button is not working.", "WEB_11746_PlayStopScan" );
@@ -328,7 +401,7 @@ public class LiveRadioPage extends Page {
 			firstLive.click();
 			WaitUtility.sleep(300);
 			count++;
-		}while (driver.getTitle().contains("Popular") && count < 5);	
+		}while (driver.getTitle().contains("Top Radio") && count < 5);	
 		makeSureItIsPlaying();
 		
 		doThumbUp("WEB_11752_thumpUp");
@@ -345,10 +418,9 @@ public class LiveRadioPage extends Page {
 	{  //fOR FAVORITE, make sure that the player is not playing to circuit pre-roll
 		login();
 		
-		//gotoExplorerOption(option_liveRadio, "Live");
 		comeToThisPage_direct();
-		firstLive.click();
-		makeSureItIsNotPlaying();
+		
+		driver.findElement(By.cssSelector("#main > div.directory-live > section > ul > li:nth-child(1) > div > div.station-text > a")).click();
 		
 		doFavorite("WEB_11755_favorite");
 		
@@ -357,31 +429,16 @@ public class LiveRadioPage extends Page {
 	
 	public void WEB_11754_thumpDown()
 	{   login();
-		//gotoExplorerOption(option_liveRadio, "Live");
+		
 		comeToThisPage_direct();
-		firstLive.click();
-		WaitUtility.waitForAjax(driver);
+		
+		waitForElement(firstLive, 2000).click();
+		
+		
 		makeSureItIsPlaying();
 		
+		doThumbDown("WEB_11754_thumpDown");
 		
-		
-		//Keep scan if the thumbDown icon is disabled
-		
-		int count = 0;
-		while (!thumbDown.isEnabled() && count <3)
-		{	
-			icon_scan.click();
-			count++;
-			WaitUtility.sleep(2000);
-		}
-		
-		thumbDown.click();
-		WaitUtility.sleep(200);
-		//String hint = growls.getText();
-		String response = driver.findElement(By.className("growls")).getText();
-		System.out.println("See growls:" + response);
-		//if (!response.contains("Thanks for your feedback"))
-		//	handleError("Thump Down is not working properly.", "WEB_11754_thumpDown");
 	}
 	
 	public void WEB_11747_adjustVolume()
@@ -406,30 +463,23 @@ public class LiveRadioPage extends Page {
 		gotoGenrePage_direct();
 		
 		//click on country genre
-		driver.findElement(By.cssSelector("section.section-block:nth-child(7) > h3:nth-child(1) > a:nth-child(1) > span:nth-child(1)")).click();
+		if (Page.getBrowser().equals("chrome"))
+		{	scrollDown();
+		    driver.findElement(By.cssSelector("#main > div.directory-genre > section:nth-child(7) > h3 > a > span:nth-child(1)")).click();
+		}else								
+		    driver.findElement(By.cssSelector("section.section-block:nth-child(7) > h3:nth-child(1) > a:nth-child(1) > span:nth-child(1)")).click();
 		
 		//play top country station
-		driver.findElement(By.cssSelector("#main > div:nth-child(1) > div:nth-child(1) > section:nth-child(1) > ul:nth-child(2) > li:nth-child(1) > div:nth-child(1) > div:nth-child(1) > a:nth-child(1) > div:nth-child(2) > button:nth-child(2)")).click();
-	    //Verify: 0. user is brought to the station page; and it is playing & sign up page shows up
+		driver.findElement(By.cssSelector("#main > div:nth-child(2) > div:nth-child(1) > section:nth-child(2) > ul:nth-child(2) > li:nth-child(1) > div:nth-child(1) > div:nth-child(1) > a:nth-child(1) > div:nth-child(2) > button:nth-child(2)")).click();
+		          		//Verify: 0. user is brought to the station page; and it is playing & sign up page shows up
 		String subTitle = driver.findElement(By.cssSelector("section.section-block:nth-child(3) > h3:nth-child(1) > a:nth-child(1) > span:nth-child(1)")).getText();
 		if (!subTitle.contains("Similar"))
 			errors.append("Clicking on top country station doesn't bring user to station page. ");
 		verifyPlayer("Country station", "WEB_11785_playStationFromGenreProfile");
-		WaitUtility.sleep(10000);//for some reason, it takes long time for the pre-roll to show
 		if (!isSoftGateShow())
 			handleError("Sign up page is not showing up. ", "WEB_11785_playStationFromGenreProfile");
 		
 		
-		//top country artist	
-		driver.navigate().back();
-	    driver.findElement(By.cssSelector("#main > div:nth-child(1) > div:nth-child(1) > section:nth-child(2) > ul:nth-child(2) > li:nth-child(1) > div:nth-child(1) > div:nth-child(1) > a:nth-child(1) > div:nth-child(2) > button:nth-child(2)")).click();
-		//verify: it is not playing & signup page shows up
-	    
-	    if (!icon_play.isDisplayed())  
-	       errors.append("Custom station is playing for unauthorized user.");
-	    
-	    if (!isSoftGateShow())
-			handleError("Sign up page is not showing up. ", "WEB_11785_playStationFromGenreProfile");
 		 
 	}
 	
@@ -439,12 +489,8 @@ public class LiveRadioPage extends Page {
 	}		
 	
 	public void comeToThisPage_direct()
-	{   if (driver == null)
-		    System.out.println("INSIDE comeToThisPage_direct():" + " Driver is NULL." );
-		else
-			System.out.println("INSIDE comeToThisPage_direct():" + " Driver is OK." );
-		String currentURL = driver.getCurrentUrl();
-	//	System.out.println("SEE current url:"  + currentURL);
+	{   String currentURL = driver.getCurrentUrl();
+		System.out.println("SEE current url:"  + currentURL);
 	    String part1 = currentURL.split("//")[0];
 	    String part2  = currentURL.split("//")[1].split("/")[0];
 	    
@@ -452,7 +498,6 @@ public class LiveRadioPage extends Page {
 		System.out.println("SEE new url:"  + newURL );
 		
 		driver.get(newURL);
-		WaitUtility.sleep(2000);
 	}
 	
 	public void gotoGenrePage_direct()
@@ -465,17 +510,25 @@ public class LiveRadioPage extends Page {
 		System.out.println("SEE new url:"  + newURL );
 		
 		driver.get(newURL);
-		//WaitUtility.sleep(1000);
-		WaitUtility.waitForAjax(driver);
+	}
+	
+	
+	public void gotoGenrePage_direct_NEW()
+	{    
+		driver.findElement(By.cssSelector(".header-menu-main > li:nth-child(2) > a:nth-child(1)")).click();
+		
 	}
 	
 	public void gotoGenrePage()
 	{  	
-		gotoExplorerOption(option_genres,"Genres");
+		genres.click();
 	
 		if (!driver.getTitle().contains("Genres"))
 			gotoGenrePage_direct();
-	}
+	}    
 
-    
+
+
+	
+
 }

@@ -2,9 +2,11 @@ package com.iheart.selenium.web;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
 
 import java.util.concurrent.TimeUnit;
 
@@ -184,34 +186,45 @@ public class WaitUtility {
         		"})(XMLHttpRequest.prototype.open,arguments[arguments.length - 1]);" 
         	
            		 );  
-         
-       
         
-        // ready to rock
-        
-      /*
-        Object phref = 
-        js.executeScript(
-        //    "(function($) { " +
-             
-            //  " alert('see href:' +  $('a[title=\"Privacy Policy\"]').attr('href')); " + 
-           " var href = $('a[title=\"Privacy Policy\"]').attr('href'); " +
-            // "  console.log('see href:' +  $('a[title=\"Privacy Policy\"]').attr('href')); " + 
-            "  console.log('see href:' +  href); " + 
-             " $('a[title=\"Privacy Policy\"]').click(); " +
-             "  console.log('about to return:' +  href); " + 
-             " return href; " 
-        //     " }) "
-           // " })(jQuery); "
-        );
-        */
-     
-           
-      
-        System.out.println("Jquery is loaded.");
-}						
+  }						
     
 
+    public static void interceptAjaxSend(WebDriver driver) throws Exception
+    {
+    	JavascriptExecutor js = (JavascriptExecutor) driver;
+        String ajaxURL = "";
+     
+           ajaxURL = (String)js.executeAsyncScript("(function(open, callback) {" +
+        		   		" var ajaxURL;" +
+        		   
+        		   		"function onStateChange(event) { "+
+		        		    "console.log('STATE HAS changed.' + this.readyState + '/' + this.status );" +
+		        		    " if (this.readyState === 4 && this.status == 200) {" +
+		        		     "console.log('AJAX IS DONE. see response:' + this.responseText);"+
+							//" console.log('see event.data/target:' + event.data + '/' + event.target);"+ 
+		        		    
+		        		    // fires on every readystatechange ever
+		        		    // use `this` to determine which XHR object fired the change event
+		        		    " setTimeout(function() {" +
+		        		    "    console.log('2s wait is done.'); " +
+		        		   " }, 2000);" +
+		        		 "}}"+
+								        		    
+						"XMLHttpRequest.prototype.send = function(data) {" +
+							
+							"	    console.log('see data:' + data  );"+
+							"	send.call(this, data);" +
+						"};" + 
+						
+						
+				"callback();"+
+        		"})(XMLHttpRequest.prototype.send,arguments[arguments.length - 1]);" 
+        	
+           		 );  
+}						
+    
+    
     
     public static void interceptHTTPS(WebDriver driver)
     {
@@ -232,4 +245,33 @@ public class WaitUtility {
 		}
     }
 	
+    
+  //Check every 500 milliSeconds
+  	//.isDisplayed() doesn't work with iheart elements, 
+  	public static WebElement waitForElement(WebDriver driver, WebElement element, long timeOutInMilliSecond)
+  	{  
+  		long times = timeOutInMilliSecond / 500 + 1;    
+  		long count = 0;
+  		driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+  		
+  		do{
+  			try{
+  			   System.out.println(element.getAttribute("outerHTML"));
+  			  if (element.isEnabled())
+  			      break;
+  			}catch(Exception e)
+  			{  System.out.println("Not there. try again.");
+  			  // e.printStackTrace();
+  			   WaitUtility.sleep(500);
+  			}
+  			
+  			count++;
+  		}while (count< times);
+  		
+  		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+  		
+  		return element;
+  	}
+  	
+    
 }

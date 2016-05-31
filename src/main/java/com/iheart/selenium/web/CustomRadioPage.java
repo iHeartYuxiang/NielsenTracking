@@ -9,7 +9,6 @@ import org.openqa.selenium.support.ui.Select;
 
 import static org.junit.Assert.*; 
 
-
 public class CustomRadioPage  extends Page {
 		
 		//Play/stop/resume/scan
@@ -33,7 +32,13 @@ public class CustomRadioPage  extends Page {
 	  	@FindBy(css="#player > div.player-center > div.player-controls > button:nth-child(2) > i") private WebElement customThumpUp;
 	  	
 	  	@FindBy(css="#player > div.player-left > div.player-info > a.player-artist.type-secondary.type-xsmall") private WebElement currentSong;
-	  	@FindBy(css="#main > div > section > ul > li:nth-child(1) > div > div.station-thumb-wrapper.ui-on-dark > a > div.hover > button > i") private WebElement customFirstLinkPlayButton;
+	  	
+	  	//@FindBy(css="li.tile:nth-child(1) > div:nth-child(1) > div:nth-child(1) > a:nth-child(1) > div:nth-child(2) > button:nth-child(2)")
+	  	@FindBy(css="#main > div.directory-custom > section > ul > li:nth-child(1) > div > div.station-thumb-wrapper.ui-on-dark > a > div.hover > button > i")	
+	  	   private WebElement customFirstLinkPlayButton;
+	  	
+	  	 	
+	  	//@FindBy(css="#main > div > section > ul > li:nth-child(1) > div > div.station-thumb-wrapper.ui-on-dark > a > div.hover > button > i") private WebElement customFirstLinkPlayButton;
 	    @FindBy(css="button.text:nth-child(4)") private WebElement customSkipButton;
 	  	@FindBy(css=".favorite") private WebElement  customFavorite; 
 	  	@FindBy(css="li.tile:nth-child(1) > div:nth-child(1) > div:nth-child(2) > a:nth-child(1)") private WebElement firstArtist;
@@ -72,7 +77,7 @@ public class CustomRadioPage  extends Page {
 		  
 		
 			new Select(driver.findElement(By.name("genre"))).selectByIndex(5); 
-			WaitUtility.waitForAjax(driver);
+			WaitUtility.sleep(1000);
 			customFirstLinkPlayButton.click();
 			
 		}
@@ -113,22 +118,19 @@ public class CustomRadioPage  extends Page {
 			playCustomRadioAfterLogin();
 			
 			//Get the current song playing
-			String songPlaying = currentSong.getText();
+			
+			String songPlaying = "";
+			try{
+		       songPlaying = currentSong.getText();
+			}catch(Exception e)
+			{
+				System.out.println("Hit the commercial. no song to thump up.");
+				return;
+			}
 			System.out.println("It is playing:" + songPlaying);
 			
 			doThumbUp("WEB_11763_thumpUpCustom");
-			//doSkip();
 			
-			/*
-			icon_skip.click();
-			WaitUtility.sleep(2000);
-			
-			String nextSong = driver.findElement(By.cssSelector("#player > div.player-left > div.player-info > a.player-artist.type-secondary.type-xsmall")).getText();
-			System.out.println("After skip:" + nextSong);
-			
-			if (nextSong.equalsIgnoreCase(songPlaying))
-				handleError("skip button is not working for custom radio.", "WEB_11763_thumpUpCustom");
-			*/
 			
 		}
 		
@@ -139,17 +141,7 @@ public class CustomRadioPage  extends Page {
 			comeToThisPage_direct();
 		
 			firstArtist.click();
-	
-			/*
-			customFavorite.click();
-			WaitUtility.sleep(1000);
-			
-			String _growls = growls.getText();
-			System.out.println("See growls:" + _growls);
-		
-			if (!_growls.contains("Favorite"))
-			   handleError("Add to Favorite failed.", "WEB_11764_addCustomStationToFavorite");
-			*/
+			//clickOnTopPlayButton();
 			
 			doFavorite("WEB_11764_addCustomStationToFavorite");
 			
@@ -172,10 +164,11 @@ public class CustomRadioPage  extends Page {
 		public void WEB_11772_browsePodcasts()
 		{   
 			
-			gotoExplorerOption(option_podCasts, "Popular");
-			
+			//gotoExplorerOption(option_podCasts, "Popular");
+			podcasts.click();
 			
 			driver.findElement(By.cssSelector("ul.station-tiles:nth-child(3) > li:nth-child(1) > div:nth-child(1) > div:nth-child(1) > a:nth-child(1) > div:nth-child(2) > button:nth-child(2)")).click();
+			clickOnTopPlayButton();
 			makeSureItIsPlaying();
 			
 			if (!isSoftGateShow())
@@ -200,6 +193,7 @@ public class CustomRadioPage  extends Page {
 			comeToThisPage_direct();
 			
 			customFirstLinkPlayButton.click();
+			
 			//makeSureItIsPlaying();
 		}
 	
@@ -207,25 +201,48 @@ public class CustomRadioPage  extends Page {
 		{   
 			//gotoExplorerOption(option_customRadio);
 			comeToThisPage_direct();
-		
 			customFirstLinkPlayButton.click();
+			//Sometimes the above play button didn't get clicked . 
+			clickOnTopPlayButton();
+			
 			
 			makeSureItIsPlaying();
 		}
 		
+		public void huntAjax() throws Exception
+		{   login();
+		    
+			comeToThisPage_direct();
+			WaitUtility.injectJQuery(driver);
+			
+			customFirstLinkPlayButton.click();
+			//Sometimes the above play button didn't get clicked . 
+			clickOnTopPlayButton();
+			
+			makeSureItIsPlaying();
+			//WaitUtility.interceptAjax(driver);
+			WaitUtility.interceptAjaxSend(driver);
+			WaitUtility.sleep(120*000);
+		}
+		
+		
+		public void playCustom()
+		{
+			login();
+			playCustomRadioAfterLogin();
+		}
+		
+
+		
+		
 		public void comeToThisPage()
-		{   /*
-			if (isChrome)
-				gotoExplorerOption(option_customRadio_xpath,"Popular");
-			else	
-			    gotoExplorerOption(option_customRadio,"Popular");
-			*/
-			//if (!driver.getTitle().contains("Popular"))
+		{  
 		    	comeToThisPage_direct();
 		}
 		
-		private void comeToThisPage_direct()
-		{   String currentURL = driver.getCurrentUrl();
+		public void comeToThisPage_direct()
+		{  
+			String currentURL = driver.getCurrentUrl();
 			System.out.println("SEE current url:"  + currentURL);
 		    String part1 = currentURL.split("//")[0];
 		    String part2  = currentURL.split("//")[1].split("/")[0];
@@ -234,16 +251,10 @@ public class CustomRadioPage  extends Page {
 			System.out.println("SEE new url:"  + newURL );
 			
 			driver.get(newURL);
-			WaitUtility.sleep(1000);
+			 //FGDF
+			WaitUtility.sleep(3000);
 			
 		}
 
-		public void playCustom()
-		{
-			login();
-			playCustomRadioAfterLogin();
-		}
-		
-		
 
 }

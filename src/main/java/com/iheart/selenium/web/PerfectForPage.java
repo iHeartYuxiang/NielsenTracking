@@ -2,7 +2,6 @@ package com.iheart.selenium.web;
 
 
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.By;
@@ -11,13 +10,16 @@ import org.openqa.selenium.By;
 
 public class PerfectForPage extends Page{
 	
-	@FindBy(css="section.section-block:nth-child(2) > ul:nth-child(2) > li:nth-child(1) > div:nth-child(1) > div:nth-child(1) > a:nth-child(1) > div:nth-child(2) > button:nth-child(2)")
-					private WebElement firstBox;
+		
+	@FindBy(css="#main > div.directory-perfect-for > div:nth-child(2) > section:nth-child(2) > ul > li:nth-child(1) > div > div.station-thumb-wrapper.ui-on-dark > a > div.hover > button > i")
+	   private WebElement firstBox;
+	
+				
 	@FindBy(css="section.section-block:nth-child(2) > ul:nth-child(2) > li:nth-child(1) > div:nth-child(1) > div:nth-child(2) > a:nth-child(1)")
 	 	private WebElement firstBoxTitle;
 	
 	@FindBy(name="activity") private WebElement activity;
-	@FindBy(css="li.tile:nth-child(1) > div:nth-child(1) > div:nth-child(1) > a:nth-child(1) > div:nth-child(2) > button:nth-child(2)")
+	@FindBy(css="#main > div.directory-perfect-for > section > ul > li:nth-child(1) > div > div.station-thumb-wrapper.ui-on-dark > a > div.hover > button > i")   
 	   private WebElement firstBox_activity;
 	
 	//ThumpUp/Down
@@ -33,21 +35,17 @@ public class PerfectForPage extends Page{
 	
 	public void WEB_11766_browsePerfect()
 	{
-		//gotoExplorerOption(option_perfectFor, "Perfect");
 		comeToThisPage_direct();
 	    firstBox.click();
 	    makeSureItIsPlaying();
 	    
-		//Verify sign-up gate shows up
 		
 	    if(!isSoftGateShow())
 			handleError("Sign up gate is not displayed.", "WEB_11766_browsePerfect");
 		
-		//driver.navigate().back();
-	    
 	    comeToThisPage_direct();
 		new Select(activity).selectByIndex(3);
-		
+		WaitUtility.sleep(1000);
 		firstBox_activity.click();
 		makeSureItIsPlaying();
 		
@@ -67,7 +65,6 @@ public class PerfectForPage extends Page{
 		//Make sure that a custom station is chosen and played
 	    searchBox.clear();
 	    searchBox.sendKeys("Classic Rock Garden");
-	    WaitUtility.sleep(1000);
 	    driver.findElement(By.cssSelector(".selected > div:nth-child(2) > p:nth-child(1) > a:nth-child(1)")).click();
 		
 		makeSureItIsPlaying();
@@ -79,51 +76,22 @@ public class PerfectForPage extends Page{
 	public void WEB_11768_addToFavorite()
 	{
 		login();
-		//gotoExplorerOption(option_perfectFor, "Perfect");
 		comeToThisPage_direct();
 		
 		//Need to remember this station name
 		String chosenStation = firstBoxTitle.getText();
 		System.out.println("See chosenStation:" + chosenStation);
 	    firstBox.click();
-	   // makeSureItIsPlaying(); //will restore it
+	    makeSureItIsPlaying();
 	    
 	    doFavorite("WEB_11768_addToFavorite");
-	    
-	    //If the song is faved before, double click; 
-	    
-	    /*
-	    try{
-		   if (icon_favorite_filled.isDisplayed())
-		   {  
-			   icon_favorite_filled.click();
-		       WaitUtility.sleep(1000);
-		   }
-	    }catch(Exception e)
-	    {
-	    	
-	    }
-	   
-	   if (!icon_favorite_unfilled.isDisplayed())
-	   {
-		   handleError("unFavorite  is not working.", "WEB_11768_addToFavorite");
-	   }
-	   
-	   icon_favorite_unfilled.click();
-		
-	   if (!icon_favorite_filled.isDisplayed())
-	   {
-		   handleError("Favorite icon is not highlighted.", "WEB_11768_addToFavorite");
-	   }
-			
-	   */ 
+	  
 		checkFavInProfile(chosenStation);
 	}
 	
 	public void WEB_11770_thumpUpPerfect()
 	{
 		login();
-		//gotoExplorerOption(option_perfectFor, "Perfect");
 		comeToThisPage_direct();
 		
 		//Need to remember this station name
@@ -139,7 +107,7 @@ public class PerfectForPage extends Page{
 	public void WEB_11771_pauseResume()
 	{
 		login();
-		gotoExplorerOption(option_perfectFor, "Perfect");
+		perfectFor.click();
 		
 	   
 		driver.findElement(By.cssSelector("li.tile:nth-child(1) > div:nth-child(1) > div:nth-child(1) > a:nth-child(1) > div:nth-child(2) > button:nth-child(2)")).click();
@@ -162,11 +130,9 @@ public class PerfectForPage extends Page{
 	public void WEB_11767_filterAfterLogin()
 	{
 		login();
-		//gotoExplorerOption(option_perfectFor, "Perfect");
 		comeToThisPage_direct();
 		new Select(activity).selectByIndex(2);
 		
-		WaitUtility.waitForAjax(driver);
 		
 		//Need to remember this station name
 		String chosenStation = firstBoxTitle.getText();
@@ -179,7 +145,10 @@ public class PerfectForPage extends Page{
 	    if (!icon_stop.getAttribute("class").equals("icon-stop"))
 			handleError("Player is not playing.", "WEB_11767_filterAfterLogin");
 	    
-		myStations.click();
+	   myStations.click();
+	   makeSureItIsPlaying();
+		
+	   
 		if (!driver.getPageSource().contains(chosenStation))
 			handleError("The chosen station is not added to my stations.", "WEB_11767_filterAfterLogin");
 		listenHistory.click();
@@ -193,10 +162,9 @@ public class PerfectForPage extends Page{
 	private void checkSkipLimit()
 	{
 		for (int i = 0; i < 6; i++)
-		{
+		{   
 			icon_skip.click();
 			thumpDown.click();
-			WaitUtility.sleep(200);
 		}
 		
 		icon_skip.click();
@@ -208,15 +176,8 @@ public class PerfectForPage extends Page{
 	}
 
 	public void comeToThisPage()
-	{  /* 
-		if (isChrome)
-			gotoExplorerOption(option_perfectFor_xpath,"Perfect");
-		else	
-		    gotoExplorerOption(option_perfectFor,"Perfect");
-		*/
-		
-		// if (!driver.getTitle().contains("Perfect"))
-		    	comeToThisPage_direct();
+	{  
+		comeToThisPage_direct();
 	}
 
 	private void comeToThisPage_direct()
@@ -229,8 +190,6 @@ public class PerfectForPage extends Page{
 		System.out.println("SEE new url:"  + newURL );
 		
 		driver.get(newURL);
-	//	WaitUtility.sleep(1000);
-		WaitUtility.waitForAjax(driver);
 	}
 
 

@@ -27,6 +27,8 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.remote.CapabilityType;
 
 
+import io.github.bonigarcia.wdm.ChromeDriverManager;
+import io.github.bonigarcia.wdm.InternetExplorerDriverManager;
 
 
 public class Utils {
@@ -55,9 +57,8 @@ public class Utils {
 	    }else if (browser.equalsIgnoreCase("chrome"))
 	    {   //Set actual path to the driver file
 	
-	      System.setProperty("webdriver.chrome.driver", "C:\\Users\\1111128\\workspace\\drivers\\chromedriver.exe");
-	   //   System.setProperty("webdriver.chrome.driver", "/Users/1111128/Documents/workspace/drivers/chromedriver.exe");	
-	
+	      ChromeDriverManager.getInstance().setup();	
+	    	
 	      ChromeOptions options = new ChromeOptions();
 	      options.addArguments("test-type");
 	      options.addArguments("--start-maximized");
@@ -67,10 +68,9 @@ public class Utils {
 	      }else if (browser.equalsIgnoreCase("ie"))
 	      {    //Set actual path to the driver file
 	
-	      System.setProperty("webdriver.ie.driver","C:\\Users\\1111128\\workspace\\drivers\\IEDriverServer.exe");
-	
+	    	  InternetExplorerDriverManager.getInstance().setup();
 	      
-	      driver = new InternetExplorerDriver();
+	         driver = new InternetExplorerDriver();
 	
 	      }else 
 	
@@ -132,12 +132,8 @@ public static WebDriver  createWebDriverWithProxy(String browser)
 	
 	    //  System.setProperty("webdriver.chrome.driver", "C:\\Users\\1111128\\workspace\\drivers\\chromedriver.exe");
 	    	System.setProperty("webdriver.chrome.driver", "/Users/1111128/git/drivers/chromedriver");
-	    /*
-	      DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-	      capabilities.setCapability("chrome.switches", Arrays.asList("--proxy-server=http://user:password@proxy.com:8080"));
-	       driver = new ChromeDriver(capabilities);  
-	      */
-	    	 String PROXY = "localhost:5369";
+	    
+	    	String PROXY = "localhost:5369";
 
 	    	org.openqa.selenium.Proxy proxy = new org.openqa.selenium.Proxy(); 
 	    	proxy.setHttpProxy(PROXY);
@@ -268,7 +264,7 @@ public static WebDriver  createWebDriverWithProxy(String browser)
 			WebDriver driver = createWebDriver(browser);
 			
 			driver.get(url);
-		//	WaitUtility.waitForAjax(driver);
+			WaitUtility.sleep(8000);
 			
 			 driver.manage().window().maximize();
 				
