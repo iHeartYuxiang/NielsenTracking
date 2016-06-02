@@ -142,23 +142,14 @@ public class WaitUtility {
     public static void interceptAjaxSendData(WebDriver driver) throws Exception
     {
     	JavascriptExecutor js = (JavascriptExecutor) driver;
-        String result = "";
-     
-         result = (String)js.executeAsyncScript("(function(send, callback) {" +
-								        		    
+        js.executeAsyncScript("(function(send, callback) {" +
 						"XMLHttpRequest.prototype.send = function(data) {" +
-							
 							"	    console.log('see data:' + data  );"+
 							"	send.call(this, data);" +
 						"};" + 
-						
-						
 				"callback();"+
         		"})(XMLHttpRequest.prototype.send,arguments[arguments.length - 1]);" 
-        	
-           		 );  
-           
-           
+        );  
     }						
     
     
