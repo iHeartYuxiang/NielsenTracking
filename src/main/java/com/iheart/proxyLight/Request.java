@@ -16,9 +16,8 @@ public class Request {
 	public void setStatusline(String statusline) {
 		this.statusline = statusline;
 		
-		// On decoupe
-		int idx1 = statusline.indexOf(' ');
-		if (idx1==-1 || idx1<3) { // au moins GET ...
+				int idx1 = statusline.indexOf(' ');
+		if (idx1==-1 || idx1<3) { 
 			throw new IllegalArgumentException("statusline: "+statusline);
 		}
 		method=statusline.substring(0, idx1);

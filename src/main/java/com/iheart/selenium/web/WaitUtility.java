@@ -65,7 +65,6 @@ public class WaitUtility {
 	public static void injectJQuery(WebDriver driver){
 	    String LoadJQuery = "(function(jqueryUrl, callback) {\n" +
 	            "if (typeof jqueryUrl != 'string') {" +
-	           // "jqueryUrl = 'https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js';\n" +
 	           "jqueryUrl = 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js';\n" +
 	            "}\n" +
 	            "if (typeof jQuery == 'undefined') {\n" +
@@ -99,47 +98,13 @@ public class WaitUtility {
 	
 	
 	
-	public static void hijackHTTPS(WebDriver driver) throws Exception
-    {
-        driver.manage().timeouts().setScriptTimeout(10, TimeUnit.SECONDS);
-        JavascriptExecutor js = (JavascriptExecutor) driver;
-        /*
-        js.executeAsyncScript("(function($) {"+ 
-        		               "var callback = arguments[arguments.length - 1];" +
-        		               
-	        					"if (window.location.protocol == 'https:'){" +
-	        		               " var url = window.location.href; " +
-	        					   " console.log('HELLO! ' + window.location.href.substring(window.location.protocol.length));}" +
-        		          	
-	        				  " callback();"  +	   
-						    "})(jQuery);"
-        );
-        */
-        
-        
-        
-        js.executeAsyncScript(  
-        		      "var callback = arguments[arguments.length - 1];" +
-        		    				
-                      " console.log('see argument:' + arguments.length + '/' + arguments[arguments.length - 1]); " +
-                  //    "if (window.location.protocol == 'https:'){" +
-   					   " console.log('HELLO :' + window.location.href);}" +  //window.location.href.substring(window.location.protocol.length));" +
-   					  "   callback(window.location.href);" 		 
-		        
-        		);
-        
-        System.out.println("HTTPS hacking code is inserted.");
-    }
-    
-	
-	
 	// driver
     public static void interceptAjax(WebDriver driver) throws Exception
     {
     	JavascriptExecutor js = (JavascriptExecutor) driver;
-        String ajaxURL = "";
+        String result = "";
      
-           ajaxURL = (String)js.executeAsyncScript("(function(open, callback) {" +
+         result = (String)js.executeAsyncScript("(function(open, callback) {" +
         		   		" var ajaxURL;" +
         		   
         		   		"function onStateChange(event) { "+
@@ -170,30 +135,16 @@ public class WaitUtility {
         		"})(XMLHttpRequest.prototype.open,arguments[arguments.length - 1]);" 
         	
            		 );  
-        
+          
   }						
     
-
+    
     public static void interceptAjaxSendData(WebDriver driver) throws Exception
     {
     	JavascriptExecutor js = (JavascriptExecutor) driver;
-        String ajaxURL = "";
+        String result = "";
      
-           ajaxURL = (String)js.executeAsyncScript("(function(open, callback) {" +
-        		   		" var ajaxURL;" +
-        		   
-        		   		"function onStateChange(event) { "+
-		        		    "console.log('STATE HAS changed.' + this.readyState + '/' + this.status );" +
-		        		    " if (this.readyState === 4 && this.status == 200) {" +
-		        		     "console.log('AJAX IS DONE. see response:' + this.responseText);"+
-							//" console.log('see event.data/target:' + event.data + '/' + event.target);"+ 
-		        		    
-		        		    // fires on every readystatechange ever
-		        		    // use `this` to determine which XHR object fired the change event
-		        		    " setTimeout(function() {" +
-		        		    "    console.log('2s wait is done.'); " +
-		        		   " }, 2000);" +
-		        		 "}}"+
+         result = (String)js.executeAsyncScript("(function(send, callback) {" +
 								        		    
 						"XMLHttpRequest.prototype.send = function(data) {" +
 							
@@ -206,29 +157,12 @@ public class WaitUtility {
         		"})(XMLHttpRequest.prototype.send,arguments[arguments.length - 1]);" 
         	
            		 );  
-}						
+           
+           
+    }						
     
     
     
-    public static void interceptHTTPS(WebDriver driver)
-    {
-    	try{
-			  WaitUtility.injectJQuery(driver);
-			 
-		}catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-    	
-    	try{
-			  
-			  WaitUtility.hijackHTTPS(driver);
-		}catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-    }
-	
     
   //Check every 500 milliSeconds
   	//.isDisplayed() doesn't work with iheart elements, 

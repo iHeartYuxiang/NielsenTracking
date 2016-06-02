@@ -34,7 +34,7 @@ public abstract class RequestProcessor {
   
   private static int processorsCpt = 1;
   private static int processorsCount = 0;
-  private static long SOCKET_TIMEOUT = 15 * 1000; // 15 secondes d'inactivite
+  private static long SOCKET_TIMEOUT = 15 * 1000; 
 //  private static ThreadPoolExecutor executor = new ThreadPoolExecutor(10, 30, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
   private transient Logger logger = Logger.getLogger(getClass().getName());
@@ -184,8 +184,7 @@ public abstract class RequestProcessor {
                                   String oh = request.getHost() + ":" + request.getPort();
                                   Socket outSocket = outSockets.get(oh);
                                   if (outSocket == null) {
-                                    // On se connecte a la destination
-                                    // en synchrone
+                                    
                                     outSocket = new Socket();
                                     outSocket.socket = SocketChannel.open();
                                     outSocket.socket.configureBlocking(false);
@@ -246,19 +245,18 @@ public abstract class RequestProcessor {
                         }
                       } else {
                         if (socket != currentOutSocket) {
-                          // Pas de raison qu'il y ai de l'activité sur autre
-                          // chose que le socket en cours. On ferme.
+                         
                           closeOutSocket(socket);
 
                         } else {
                           if (response == null) response = new Response(request);
-                          // Transférer tel que a inSocket
+                         
                           if (transfer(socket, inSocket, now, response, responseStep) == RESPONSE_STEP.RESPONSE_DONE) {
-                            // En mode "Connect", on ferme tout.
+                            
                             if ("CONNECT".equals(request.getMethod())) {
                               closeAll();
                             } else {
-                              // On ferme uniquement la socket en cours
+                              
                               closeOutSocket(socket);
                               currentOutSocket = null;
                             }
